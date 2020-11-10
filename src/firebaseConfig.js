@@ -3,8 +3,7 @@ import '@firebase/auth';
 import '@firebase/firestore';
 import 'firebase/analytics';
 import 'firebase/storage';
-
-const firebaseConfig = {};
+import { firebaseConfig } from 'firebasekey';
 
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();

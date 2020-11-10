@@ -82,42 +82,44 @@ function ImageUpload() {
   );
 
   const handleUpload = () => {
-    const image = files[0];
-    const uploadTask = storage.ref(`images/${image.path}`).put(image);
-    uploadTask.on(
-      'state_changed',
-      (snapshot) => {
-        // progrss function ....
-        // const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-        // this.setState({ progress });
-      },
-      (error) => {
-        // error function ....
-        console.log(error);
-      },
-      () => {
-        // complete function ....
-        storage
-          .ref('images')
-          .child(image.name)
-          .getDownloadURL()
-          .then(async (url) => {
-            db.collection('pictures')
-              .add({
-                src: url,
-                width: 4,
-                height: 3,
-                title: image.name
-              })
-              .then(function (docRef) {
-                console.log('Document written with ID: ', docRef.id);
-              })
-              .catch(function (error) {
-                console.error('Error adding document: ', error);
-              });
-          });
-      }
-    );
+    files.forEach((file) => {
+      const image = file;
+      const uploadTask = storage.ref(`images/${image.path}`).put(image);
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          // progrss function ....
+          // const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+          // this.setState({ progress });
+        },
+        (error) => {
+          // error function ....
+          console.log(error);
+        },
+        () => {
+          // complete function ....
+          storage
+            .ref('images')
+            .child(image.name)
+            .getDownloadURL()
+            .then(async (url) => {
+              db.collection('pictures')
+                .add({
+                  src: url,
+                  width: 4,
+                  height: 3,
+                  title: image.name
+                })
+                .then(function (docRef) {
+                  console.log('Document written with ID: ', docRef.id);
+                })
+                .catch(function (error) {
+                  console.error('Error adding document: ', error);
+                });
+            });
+        }
+      );
+    });
   };
 
   return (

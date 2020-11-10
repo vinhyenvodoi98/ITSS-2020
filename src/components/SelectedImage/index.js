@@ -50,7 +50,7 @@ const SelectedImage = ({
   left,
   selected
 }) => {
-  const [url, setUrl] = useState('');
+  const [title, setTitle] = useState('');
   const [isSelected, setIsSelected] = useState(selected);
   //calculate x,y scale
   const sx = (100 - (30 / photo.width) * 100) / 100;
@@ -68,28 +68,32 @@ const SelectedImage = ({
   };
 
   const download = () => {
-    var storageRef = storage.ref('images');
+    var storageRef = storage.ref();
     storageRef
-      .child('uni.png')
+      .child(`images/${title}`)
       .getDownloadURL()
       .then(function (url) {
-        // `url` is the download URL for 'images/stars.jpg'
-
-        // This can be downloaded directly:
-        var xhr = new XMLHttpRequest();
-        xhr.responseType = 'blob';
-        xhr.onload = function (event) {
-          var blob = xhr.response;
-        };
-        xhr.open('GET', url);
-        xhr.send();
-
-        // Or inserted into an <img> element:
-        var img = document.getElementById('myimg');
-        img.src = url;
+        fetch(url, {
+          method: 'GET',
+          headers: {}
+        })
+          .then((response) => {
+            response.arrayBuffer().then(function (buffer) {
+              const url = window.URL.createObjectURL(new Blob([buffer]));
+              const link = document.createElement('a');
+              link.href = url;
+              link.setAttribute('download', title); //or any other extension
+              document.body.appendChild(link);
+              link.click();
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       })
       .catch(function (error) {
         // Handle any errors
+        console.log(error);
       });
   };
 
@@ -101,7 +105,7 @@ const SelectedImage = ({
     <div
       style={{ margin, height: photo.height, width: photo.width, ...cont }}
       className={!isSelected ? 'not-selected' : ''}
-      onClick={() => setUrl(photo.title)}
+      onClick={() => setTitle(photo.title)}
     >
       <Checkmark selected={isSelected ? true : false} download={download} />
       <img
