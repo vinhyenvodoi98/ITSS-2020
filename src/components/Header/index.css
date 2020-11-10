@@ -1,0 +1,72 @@
+i.Nav {
+  background-color: black;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.0975);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 2;
+  -webkit-transition: height 0.2s ease-in-out;
+  transition: height 0.2s ease-in-out;
+  height: 77px;
+}
+
+.Nav-brand {
+  width: 100%;
+}
+
+.Nav-menus {
+  display: flex;
+  flex-direction: row;
+  height: 77px;
+  width: 70%;
+  margin: 0 auto;
+  padding: 26px 40px;
+}
+
+.Nav-brand-logo {
+  display: block;
+  /* background-position: -176px 0px; */
+  /* background-image: url(../../images/GoShare.png); */
+  background-size: 144px 29px;
+  background-repeat: no-repeat;
+  width: 384px;
+  text-indent: -1000%;
+}
+
+.Nav-brand > a:hover {
+  text-decoration: none !important;
+}
+
+.Nav-brand > a {
+  font-size: 1.2rem;
+  padding: 0.25rem;
+  line-height: 1.5;
+  font-weight: 500;
+  color: black;
+}
+
+.Nav-brand > .row {
+  margin: auto;
+}
+
+.Post-user-nav {
+  display: flex;
+  align-items: center;
+}
+
+.camera {
+  cursor: pointer;
+  height: 30px;
+  width: 30px;
+  background-size: 30px 30px;
+  /* background-image: url(../../images/camera.png); */
+}
+
+a {
+  text-decoration: none;
+  color: #000000;
+}
+
+a:hover {
+  color: #222222;
+}
