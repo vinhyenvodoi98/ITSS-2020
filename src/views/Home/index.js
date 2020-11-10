@@ -1,26 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Tabs } from 'antd';
-import { db } from 'firebaseConfig';
 import Images from 'components/Images';
-
+import { getPictures } from 'store/actions';
+import { useSelector, useDispatch } from 'react-redux';
 const { TabPane } = Tabs;
 
 function Home() {
-  const [photos, setPhotos] = useState([]);
-
-  const fetchImage = () => {
-    db.collection('pictures')
-      .get()
-      .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          setPhotos((photos) => [...photos, doc.data()]);
-        });
-      });
-  };
+  const dispatch = useDispatch();
+  const photos = useSelector((state) => state.photos);
 
   useEffect(() => {
-    fetchImage();
-  }, []);
+    dispatch(getPictures());
+  }, [dispatch]);
 
   function callback(key) {
     console.log(key);
@@ -37,7 +28,7 @@ function Home() {
           <Images photos={photos} />
         </TabPane>
         <TabPane tab='Xu Hướng' key='2'>
-          Content of Tab Pane 2
+          <Images photos={photos} />
         </TabPane>
         <TabPane tab='Sự kiện' key='3'>
           Content of Tab Pane 3

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { useDropzone } from 'react-dropzone';
 import { storage, db } from 'firebaseConfig';
 import { Redirect } from 'react-router';
 import { message } from 'antd';
 import './index.css';
+import { getPictures } from 'store/actions';
 
 const thumbsContainer = {
   display: 'flex',
@@ -45,6 +47,7 @@ const img = {
 };
 
 function ImageUpload({ close }) {
+  const dispatch = useDispatch();
   const [files, setFiles] = useState([]);
   const [redirect] = useState(false);
 
@@ -129,6 +132,7 @@ function ImageUpload({ close }) {
                 .then(function (docRef) {
                   console.log('Document written with ID: ', docRef.id);
                   message.success('Upload successfully');
+                  dispatch(getPictures());
                   close();
                 })
                 .catch(function (error) {
