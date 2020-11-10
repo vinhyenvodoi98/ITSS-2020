@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { storage, db } from 'firebaseConfig';
 import { Redirect } from 'react-router';
-
+import { message } from 'antd';
 import './index.css';
 
 const thumbsContainer = {
@@ -44,7 +44,7 @@ const img = {
   height: '100%'
 };
 
-function ImageUpload() {
+function ImageUpload({ close }) {
   const [files, setFiles] = useState([]);
   const [redirect] = useState(false);
 
@@ -81,8 +81,24 @@ function ImageUpload() {
     [files]
   );
 
-  const handleUpload = () => {
+  const handleUpload = (close) => {
     files.forEach((file) => {
+      var imgWidth;
+      var imgHeight;
+      var imageSize = new Image();
+      let fr = new FileReader();
+
+      fr.onload = function () {
+        if (fr !== null && typeof fr.result == 'string') {
+          imageSize.src = fr.result;
+        }
+      };
+      fr.readAsDataURL(file);
+
+      imageSize.onload = async function () {
+        imgWidth = imageSize.width;
+        imgHeight = imageSize.height;
+      };
       const image = file;
       const uploadTask = storage.ref(`images/${image.path}`).put(image);
       uploadTask.on(
@@ -106,14 +122,17 @@ function ImageUpload() {
               db.collection('pictures')
                 .add({
                   src: url,
-                  width: 4,
-                  height: 3,
+                  width: imgWidth,
+                  height: imgHeight,
                   title: image.name
                 })
                 .then(function (docRef) {
                   console.log('Document written with ID: ', docRef.id);
+                  message.success('Upload successfully');
+                  close();
                 })
                 .catch(function (error) {
+                  message.error('Upload failed');
                   console.error('Error adding document: ', error);
                 });
             });
@@ -136,7 +155,7 @@ function ImageUpload() {
         </aside>
 
         <div className='button-area'>
-          <button className='btn btn-light' onClick={handleUpload}>
+          <button className='btn btn-light' onClick={() => handleUpload(close)}>
             {'Upload'}
           </button>
         </div>

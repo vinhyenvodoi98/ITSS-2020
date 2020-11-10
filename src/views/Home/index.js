@@ -8,7 +8,7 @@ const { TabPane } = Tabs;
 function Home() {
   const [photos, setPhotos] = useState([]);
 
-  useEffect(() => {
+  const fetchImage = () => {
     db.collection('pictures')
       .get()
       .then((querySnapshot) => {
@@ -16,6 +16,10 @@ function Home() {
           setPhotos((photos) => [...photos, doc.data()]);
         });
       });
+  };
+
+  useEffect(() => {
+    fetchImage();
   }, []);
 
   function callback(key) {
