@@ -86,62 +86,66 @@ function ImageUpload({ close }) {
 
   const handleUpload = (close) => {
     files.forEach((file) => {
-      var imgWidth;
-      var imgHeight;
-      var imageSize = new Image();
-      let fr = new FileReader();
+      if (file.size > 1000000) {
+        var imgWidth;
+        var imgHeight;
+        var imageSize = new Image();
+        let fr = new FileReader();
 
-      fr.onload = function () {
-        if (fr !== null && typeof fr.result == 'string') {
-          imageSize.src = fr.result;
-        }
-      };
-      fr.readAsDataURL(file);
+        fr.onload = function () {
+          if (fr !== null && typeof fr.result == 'string') {
+            imageSize.src = fr.result;
+          }
+        };
+        fr.readAsDataURL(file);
 
-      imageSize.onload = async function () {
-        imgWidth = imageSize.width;
-        imgHeight = imageSize.height;
-      };
-      const image = file;
-      const uploadTask = storage.ref(`images/${image.path}`).put(image);
-      uploadTask.on(
-        'state_changed',
-        (snapshot) => {
-          // progrss function ....
-          // const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-          // this.setState({ progress });
-        },
-        (error) => {
-          // error function ....
-          console.log(error);
-        },
-        () => {
-          // complete function ....
-          storage
-            .ref('images')
-            .child(image.name)
-            .getDownloadURL()
-            .then(async (url) => {
-              db.collection('pictures')
-                .add({
-                  src: url,
-                  width: imgWidth,
-                  height: imgHeight,
-                  title: image.name
-                })
-                .then(function (docRef) {
-                  console.log('Document written with ID: ', docRef.id);
-                  message.success('Upload successfully');
-                  dispatch(getPictures());
-                  close();
-                })
-                .catch(function (error) {
-                  message.error('Upload failed');
-                  console.error('Error adding document: ', error);
-                });
-            });
-        }
-      );
+        imageSize.onload = async function () {
+          imgWidth = imageSize.width;
+          imgHeight = imageSize.height;
+        };
+        const image = file;
+        const uploadTask = storage.ref(`images/${image.path}`).put(image);
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            // progrss function ....
+            // const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+            // this.setState({ progress });
+          },
+          (error) => {
+            // error function ....
+            console.log(error);
+          },
+          () => {
+            // complete function ....
+            storage
+              .ref('images')
+              .child(image.name)
+              .getDownloadURL()
+              .then(async (url) => {
+                db.collection('pictures')
+                  .add({
+                    src: url,
+                    width: imgWidth,
+                    height: imgHeight,
+                    title: image.name
+                  })
+                  .then(function (docRef) {
+                    console.log('Document written with ID: ', docRef.id);
+                    message.success('Upload successfully');
+                    dispatch(getPictures());
+                    close();
+                  })
+                  .catch(function (error) {
+                    message.error('Upload failed');
+                    console.error('Error adding document: ', error);
+                  });
+              });
+          }
+        );
+      } else {
+        alert(`${file.name} is must be over 1MB`);
+      }
     });
   };
 
