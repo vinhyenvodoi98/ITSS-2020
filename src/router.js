@@ -1,6 +1,7 @@
 import { BrowserRouter, Route } from 'react-router-dom';
 import Header from 'components/Header';
 import Home from 'views/Home';
+import Signup from 'views/Signup';
 
 function Router() {
   return (
@@ -9,6 +10,7 @@ function Router() {
       <Header />
 
       <Route exact path='/' component={Home} />
+      <Route exact path='/signup' component={Signup} />
       {/* {content.LoginStatus.isLogin ? (
         <Switch>
           <Route exact path='/' component={Home} />
