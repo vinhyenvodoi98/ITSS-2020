@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useDropzone } from 'react-dropzone';
-import { storage, db } from 'firebaseConfig';
+import { storage, db, auth } from 'firebaseConfig';
 import { Redirect } from 'react-router';
 import { message } from 'antd';
 import './index.css';
@@ -49,7 +49,19 @@ const img = {
 function ImageUpload({ close }) {
   const dispatch = useDispatch();
   const [files, setFiles] = useState([]);
+  const [currentUser, setCurrentUser] = useState('');
   const [redirect] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((authUser) => {
+      if (authUser) {
+        setCurrentUser(authUser);
+      }
+    });
+    return () => {
+      unsubscribe();
+    };
+  });
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: 'image/*',
@@ -128,7 +140,11 @@ function ImageUpload({ close }) {
                     src: url,
                     width: imgWidth,
                     height: imgHeight,
-                    title: image.name
+                    title: image.name,
+                    author: {
+                      img: currentUser.photoURL,
+                      name: currentUser.displayName
+                    }
                   })
                   .then(function (docRef) {
                     console.log('Document written with ID: ', docRef.id);

@@ -4,7 +4,9 @@ import {
   auth,
   signInWithGoogle,
   signInWithFacebook,
-  signInWithTwitter
+  signInWithTwitter,
+  selectDB,
+  insertDB
 } from 'firebaseConfig';
 import { Redirect } from 'react-router-dom';
 
@@ -20,6 +22,18 @@ import './index.css';
 
 export default function Signup() {
   const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    const addUser = async () => {
+      if (!!currentUser) {
+        var isExists = await selectDB('users', currentUser.uid);
+        if (!isExists) {
+          insertDB('users', currentUser.uid, { downloadTime: 10000 });
+        }
+      }
+    };
+    addUser();
+  }, [currentUser]);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {

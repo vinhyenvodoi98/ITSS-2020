@@ -7,27 +7,32 @@ import Modal from 'react-awesome-modal';
 
 import './index.css';
 import ImageUpload from 'components/ImageUpload';
+import { useDispatch } from 'react-redux';
+import { setCurrentUsers } from 'store/actions';
 const { Search } = Input;
 
 function Header() {
   const [visible, setvisible] = useState(false);
   const [currentUser, setCurrentUser] = useState('');
   const onSearch = (value) => console.log(value);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
         setCurrentUser(authUser);
+        dispatch(setCurrentUsers(authUser));
       }
     });
     return () => {
       unsubscribe();
     };
-  });
+  }, [dispatch]);
 
   const signout = () => {
     signOut();
     setCurrentUser('');
+    dispatch(setCurrentUser(null));
   };
 
   return (

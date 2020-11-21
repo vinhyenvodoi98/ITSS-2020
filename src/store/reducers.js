@@ -1,7 +1,8 @@
 import * as actions from './actions';
 
 const initialState = {
-  photos: []
+  photos: [],
+  currentUser: null
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -10,6 +11,11 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         photos: action.photos
+      };
+    case actions.SET_CURRENTUSER:
+      return {
+        ...state,
+        currentUser: action.currentUser
       };
     default:
       return state;

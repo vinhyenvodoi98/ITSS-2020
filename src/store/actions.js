@@ -16,3 +16,11 @@ export const getPictures = () => async (dispatch) => {
     photos
   });
 };
+
+export const SET_CURRENTUSER = 'SET_CURRENTUSER';
+export const setCurrentUsers = (currentUser) => async (dispatch) => {
+  dispatch({
+    type: SET_CURRENTUSER,
+    currentUser
+  });
+};
