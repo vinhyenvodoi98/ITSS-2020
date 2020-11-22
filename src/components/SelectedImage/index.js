@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { storage, selectDB, updateDB } from 'firebaseConfig';
-import { Modal, Avatar, message } from 'antd';
+import { Modal, Avatar, message, Tag } from 'antd';
 import { useSelector } from 'react-redux';
 
 const imgStyle = {
@@ -108,12 +108,12 @@ const SelectedImage = ({
         onClick={handleOnClick}
       />
       <Modal
-        title='Basic Modal'
+        title='Image'
         visible={isSelected}
         onOk={() => download()}
         okText='Download'
         onCancel={() => setIsSelected(!isSelected)}
-        // width={photo.width}
+        width={photo.width}
       >
         <div
           style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
@@ -123,6 +123,15 @@ const SelectedImage = ({
             style={{ height: photo.height, width: photo.width }}
             {...photo}
           />
+        </div>
+
+        <div style={{ marginTop: '2vh', marginBottom: '2vh' }}>
+          <p>
+            <strong>Tag</strong>
+          </p>
+          {photo.label
+            ? photo.label.map((tag, index) => <Tag key={index}>{tag}</Tag>)
+            : ''}
         </div>
 
         <div>
@@ -135,6 +144,7 @@ const SelectedImage = ({
               src={photo.author ? photo.author.img : ''}
               style={{ marginRight: '20px' }}
             ></Avatar>
+
             <p>
               <strong>{photo.author ? photo.author.name : ''}</strong>
             </p>

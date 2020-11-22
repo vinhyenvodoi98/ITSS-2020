@@ -6,6 +6,7 @@ import { Redirect } from 'react-router';
 import { message } from 'antd';
 import './index.css';
 import { getPictures } from 'store/actions';
+const axios = require('axios');
 
 const thumbsContainer = {
   display: 'flex',
@@ -97,6 +98,7 @@ function ImageUpload({ close }) {
   );
 
   const handleUpload = (close) => {
+    message.success('Waiting for upload....');
     files.forEach((file) => {
       if (file.size > 1000000) {
         var imgWidth;
@@ -130,11 +132,19 @@ function ImageUpload({ close }) {
           },
           () => {
             // complete function ....
+
             storage
               .ref('images')
               .child(image.name)
               .getDownloadURL()
               .then(async (url) => {
+                let label = await axios.post(
+                  'https://labelingimages.herokuapp.com/api/classify',
+                  {
+                    url
+                  }
+                );
+
                 db.collection('pictures')
                   .add({
                     src: url,
@@ -144,7 +154,8 @@ function ImageUpload({ close }) {
                     author: {
                       img: currentUser.photoURL,
                       name: currentUser.displayName
-                    }
+                    },
+                    label: label.data
                   })
                   .then(function (docRef) {
                     console.log('Document written with ID: ', docRef.id);

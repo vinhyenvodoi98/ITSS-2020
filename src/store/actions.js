@@ -17,6 +17,26 @@ export const getPictures = () => async (dispatch) => {
   });
 };
 
+export const searchPictures = (label) => async (dispatch) => {
+  var photos = [];
+  // -------------select firestore----------
+  await db
+    .collection('pictures')
+    .where('label', 'array-contains', label)
+    .get()
+    .then(function (querySnapshot) {
+      console.log(querySnapshot);
+      querySnapshot.forEach(function (doc) {
+        // doc.data() is never undefined for query doc snapshots
+        photos.push(doc.data());
+      });
+    });
+  dispatch({
+    type: GET_PICTURES,
+    photos
+  });
+};
+
 export const SET_CURRENTUSER = 'SET_CURRENTUSER';
 export const setCurrentUsers = (currentUser) => async (dispatch) => {
   dispatch({

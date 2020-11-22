@@ -8,13 +8,16 @@ import Modal from 'react-awesome-modal';
 import './index.css';
 import ImageUpload from 'components/ImageUpload';
 import { useDispatch } from 'react-redux';
-import { setCurrentUsers } from 'store/actions';
+import { setCurrentUsers, searchPictures, getPictures } from 'store/actions';
 const { Search } = Input;
 
 function Header() {
   const [visible, setvisible] = useState(false);
   const [currentUser, setCurrentUser] = useState('');
-  const onSearch = (value) => console.log(value);
+  const onSearch = async (value) => {
+    if (!!value) dispatch(searchPictures(value));
+    else dispatch(getPictures());
+  };
   const dispatch = useDispatch();
 
   useEffect(() => {
