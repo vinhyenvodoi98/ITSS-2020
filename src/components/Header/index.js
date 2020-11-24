@@ -1,21 +1,29 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Input, Avatar, Tooltip, Button } from 'antd';
+import { Select, Avatar, Tooltip, Button } from 'antd';
 import { CloudUploadOutlined, LogoutOutlined } from '@ant-design/icons';
 import { auth, signOut } from 'firebaseConfig';
 import Modal from 'react-awesome-modal';
 
 import './index.css';
 import ImageUpload from 'components/ImageUpload';
-import { useDispatch } from 'react-redux';
-import { setCurrentUsers, searchPictures, getPictures } from 'store/actions';
-const { Search } = Input;
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  setCurrentUsers,
+  searchPictures,
+  getPictures,
+  getSearch
+} from 'store/actions';
+
+const { Option } = Select;
 
 function Header() {
   const [visible, setvisible] = useState(false);
   const [currentUser, setCurrentUser] = useState('');
+  const search = useSelector((state) => state.search);
   const onSearch = async (value) => {
-    if (!!value) dispatch(searchPictures(value));
+    console.log(value);
+    if (value.length > 0) dispatch(searchPictures(value));
     else dispatch(getPictures());
   };
   const dispatch = useDispatch();
@@ -30,6 +38,10 @@ function Header() {
     return () => {
       unsubscribe();
     };
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(getSearch());
   }, [dispatch]);
 
   const signout = () => {
@@ -73,13 +85,19 @@ function Header() {
             </Link>
           </li>
         </ul>
-        <Search
-          placeholder='input search text'
-          allowClear
-          onSearch={onSearch}
-          style={{ width: 200, margin: '0 10px' }}
-        />
-
+        <Select
+          mode='multiple'
+          style={{ width: 400, marginRight: 20 }}
+          placeholder='Search images'
+          optionFilterProp='children'
+          onChange={onSearch}
+        >
+          {search.map((d, index) => (
+            <Option key={index} value={d}>
+              {d}
+            </Option>
+          ))}
+        </Select>
         {!!currentUser ? (
           <ul className='navbar-nav'>
             <li>

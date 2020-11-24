@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useDropzone } from 'react-dropzone';
-import { storage, db, auth } from 'firebaseConfig';
+import { storage, db, auth, selectDB, insertDB } from 'firebaseConfig';
 import { Redirect } from 'react-router';
-import { message } from 'antd';
+import { message, Spin } from 'antd';
 import './index.css';
 import { getPictures } from 'store/actions';
 const axios = require('axios');
@@ -20,7 +20,8 @@ const style = {
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  justifyContent: 'center'
+  justifyContent: 'center',
+  position: 'relative'
 };
 
 const thumb = {
@@ -51,6 +52,7 @@ function ImageUpload({ close }) {
   const dispatch = useDispatch();
   const [files, setFiles] = useState([]);
   const [currentUser, setCurrentUser] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [redirect] = useState(false);
 
   useEffect(() => {
@@ -98,7 +100,7 @@ function ImageUpload({ close }) {
   );
 
   const handleUpload = (close) => {
-    message.success('Waiting for upload....');
+    setIsLoading(true);
     files.forEach((file) => {
       if (file.size > 1000000) {
         var imgWidth;
@@ -121,52 +123,66 @@ function ImageUpload({ close }) {
         const uploadTask = storage.ref(`images/${image.path}`).put(image);
         uploadTask.on(
           'state_changed',
-          (snapshot) => {
-            // progrss function ....
-            // const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-            // this.setState({ progress });
-          },
+          (snapshot) => {},
           (error) => {
             // error function ....
             console.log(error);
           },
           () => {
-            // complete function ....
-
             storage
               .ref('images')
               .child(image.name)
               .getDownloadURL()
               .then(async (url) => {
-                let label = await axios.post(
-                  'https://labelingimages.herokuapp.com/api/classify',
-                  {
-                    url
-                  }
-                );
+                console.log({ url });
+                try {
+                  let label = await axios.post(
+                    'https://labelingimages.herokuapp.com/api/classify',
+                    {
+                      url
+                    }
+                  );
 
-                db.collection('pictures')
-                  .add({
-                    src: url,
-                    width: imgWidth,
-                    height: imgHeight,
-                    title: image.name,
-                    author: {
-                      img: currentUser.photoURL,
-                      name: currentUser.displayName
-                    },
-                    label: label.data
-                  })
-                  .then(function (docRef) {
-                    console.log('Document written with ID: ', docRef.id);
-                    message.success('Upload successfully');
-                    dispatch(getPictures());
-                    close();
-                  })
-                  .catch(function (error) {
-                    message.error('Upload failed');
-                    console.error('Error adding document: ', error);
+                  console.log('label', label.data);
+
+                  let labelDb = await selectDB('label', 'label');
+
+                  await label.data.forEach((lb) => {
+                    if (labelDb.label.indexOf(lb) === -1) {
+                      labelDb.label.push(lb);
+                    }
                   });
+
+                  console.log('labelDb', labelDb);
+
+                  await insertDB('label', 'label', labelDb);
+
+                  db.collection('pictures')
+                    .add({
+                      src: url,
+                      width: imgWidth,
+                      height: imgHeight,
+                      title: image.name,
+                      author: {
+                        img: currentUser.photoURL,
+                        name: currentUser.displayName
+                      },
+                      label: label.data
+                    })
+                    .then(function (docRef) {
+                      console.log('Document written with ID: ', docRef.id);
+                      message.success('Upload successfully');
+                      setIsLoading(false);
+                      dispatch(getPictures());
+                      close();
+                    })
+                    .catch(function (error) {
+                      message.error('Upload failed');
+                      console.error('Error adding document: ', error);
+                    });
+                } catch (e) {
+                  console.log(e);
+                }
               });
           }
         );
@@ -195,6 +211,28 @@ function ImageUpload({ close }) {
           </button>
         </div>
       </section>
+
+      {isLoading ? (
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexDirection: 'column',
+            backgroundColor: 'white',
+            opacity: 0.8
+          }}
+        >
+          <Spin size='large' />
+          loading...
+        </div>
+      ) : (
+        ''
+      )}
+
       <br />
     </div>
   );

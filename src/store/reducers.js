@@ -2,6 +2,7 @@ import * as actions from './actions';
 
 const initialState = {
   photos: [],
+  search: [],
   currentUser: null
 };
 
@@ -11,6 +12,11 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         photos: action.photos
+      };
+    case actions.GET_SEARCH:
+      return {
+        ...state,
+        search: action.search
       };
     case actions.SET_CURRENTUSER:
       return {

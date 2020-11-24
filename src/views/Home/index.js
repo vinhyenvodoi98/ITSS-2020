@@ -14,7 +14,9 @@ function Home() {
   }, [dispatch]);
 
   function callback(key) {
-    console.log(key);
+    if (key === '1') {
+      dispatch(getPictures());
+    }
   }
 
   return (

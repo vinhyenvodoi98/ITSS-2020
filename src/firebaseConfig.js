@@ -15,7 +15,7 @@ export const db = firebase.app().firestore();
 export var selectDB = async (collection, doc) => {
   var docs = await db.collection(collection).doc(doc).get();
   if (docs.exists) {
-    console.log('Document data:', docs.data());
+    // console.log('Document data:', docs.data());
     return docs.data();
   } else {
     console.log('not found');
