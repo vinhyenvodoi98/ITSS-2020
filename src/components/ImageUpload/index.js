@@ -100,8 +100,9 @@ function ImageUpload({ close }) {
   );
 
   const handleUpload = (close) => {
-    setIsLoading(true);
     files.forEach((file) => {
+      setIsLoading(true);
+
       if (file.size > 1000000) {
         var imgWidth;
         var imgHeight;

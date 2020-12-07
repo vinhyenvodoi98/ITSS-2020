@@ -53,6 +53,23 @@ export const updateDB = (collection, doc, data) => {
     });
 };
 
+// -------------update firestore----------
+export const updateComment = (collection, doc, data) => {
+  db.collection(collection)
+    .doc(doc)
+    .update({
+      comment: firebase.firestore.FieldValue.arrayUnion(data)
+    })
+    .then(function () {
+      console.log('Document successfully written!');
+      // message.success('Upload successfully');
+    })
+    .catch(function (error) {
+      console.error('Error adding document: ', error);
+      // message.error('Upload failed');
+    });
+};
+
 // -------------Google----------------
 const provider = new firebase.auth.GoogleAuthProvider();
 provider.setCustomParameters({ prompt: 'select_account' });

@@ -1,0 +1,29 @@
+.ant-modal-content {
+  height: 100% !important;
+}
+
+.ant-modal-body {
+  height: 80% !important;
+}
+
+.ant-avatar-image > img {
+  height: 100% !important;
+  width: 100% !important;
+}
+
+.ant-comment-avatar > img {
+  height: 40px !important;
+  width: 40px !important;
+}
+
+.comment {
+  overflow: auto;
+  max-height: 48%;
+}
+
+@media only screen and (min-width: 1400px) {
+  .comment {
+    overflow: auto;
+    max-height: 68%;
+  }
+}

@@ -8,7 +8,9 @@ export const getPictures = () => async (dispatch) => {
     .get()
     .then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
-        photos.push(doc.data());
+        var data = doc.data();
+        data.id = doc.id;
+        photos.push(data);
       });
     });
   dispatch({
