@@ -2,6 +2,7 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import Header from 'components/Header';
 import Home from 'views/Home';
 import Signup from 'views/Signup';
+import ImageDetail from 'views/ImageDetail';
 
 function Router() {
   return (
@@ -10,6 +11,7 @@ function Router() {
       <Header />
 
       <Route exact path='/' component={Home} />
+      <Route exact path='/images/:title/:id' component={ImageDetail} />
       <Route exact path='/signup' component={Signup} />
       {/* {content.LoginStatus.isLogin ? (
         <Switch>

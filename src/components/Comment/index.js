@@ -1,15 +1,35 @@
-import { Comment, Avatar, Form, List, Input } from 'antd';
+import { Comment, Avatar, Form, List, Input, Tooltip } from 'antd';
 import moment from 'moment';
-import { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useState, createElement } from 'react';
+import { useSelector } from 'react-redux';
 import { updateComment } from 'firebaseConfig';
-import { getPictures } from 'store/actions';
+import {
+  DislikeOutlined,
+  LikeOutlined,
+  DislikeFilled,
+  LikeFilled
+} from '@ant-design/icons';
 
-export default function CommentA({ doc, comment }) {
+export default function CommentA({ doc, comment, setComment }) {
   const [value, setValue] = useState('');
-  const [setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const currentUser = useSelector((state) => state.currentUser);
-  const dispatch = useDispatch();
+
+  const [likes, setLikes] = useState(0);
+  const [dislikes, setDislikes] = useState(0);
+  const [action, setAction] = useState(null);
+
+  const like = () => {
+    setLikes(1);
+    setDislikes(0);
+    setAction('liked');
+  };
+
+  const dislike = () => {
+    setLikes(0);
+    setDislikes(1);
+    setAction('disliked');
+  };
 
   const handleSubmit = async () => {
     if (!value) {
@@ -25,7 +45,7 @@ export default function CommentA({ doc, comment }) {
       datetime: moment().fromNow()
     });
     setValue('');
-    dispatch(getPictures());
+    setComment();
   };
 
   const CommentList = ({ comments }) => (
@@ -38,7 +58,27 @@ export default function CommentA({ doc, comment }) {
 
   return (
     <div className='comment'>
+      <div className='like'>
+        <Tooltip key='comment-basic-like' title='Like'>
+          <span onClick={like}>
+            {createElement(action === 'liked' ? LikeFilled : LikeOutlined)}
+            <span className='comment-action'>{likes}</span>
+          </span>
+        </Tooltip>
+
+        <Tooltip key='comment-basic-dislike' title='Dislike'>
+          <span onClick={dislike}>
+            {React.createElement(
+              action === 'disliked' ? DislikeFilled : DislikeOutlined
+            )}
+            <span className='comment-action'>{dislikes}</span>
+          </span>
+        </Tooltip>
+      </div>
+
+      <hr />
       {!!comment && <CommentList comments={comment} />}
+
       {currentUser ? (
         <Comment
           avatar={

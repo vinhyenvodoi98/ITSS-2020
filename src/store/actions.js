@@ -1,4 +1,4 @@
-import { db, selectDB } from 'firebaseConfig';
+import { db, selectDB, searchDB } from 'firebaseConfig';
 
 export const GET_PICTURES = 'GET_PICTURES';
 export const getPictures = () => async (dispatch) => {
@@ -29,18 +29,8 @@ export const getSearch = () => async (dispatch) => {
 };
 
 export const searchPictures = (label) => async (dispatch) => {
-  var photos = [];
-  // -------------select firestore----------
-  await db
-    .collection('pictures')
-    .where('label', 'array-contains-any', label)
-    .get()
-    .then(function (querySnapshot) {
-      querySnapshot.forEach(function (doc) {
-        // doc.data() is never undefined for query doc snapshots
-        photos.push(doc.data());
-      });
-    });
+  var photos = await searchDB('pictures', label);
+
   dispatch({
     type: GET_PICTURES,
     photos

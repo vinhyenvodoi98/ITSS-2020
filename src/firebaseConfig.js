@@ -23,6 +23,25 @@ export var selectDB = async (collection, doc) => {
   }
 };
 
+// -------------search firestore----------
+export var searchDB = async (collection, label) => {
+  var photos = [];
+  // -------------select firestore----------
+  await db
+    .collection(collection)
+    .where('label', 'array-contains-any', label)
+    .get()
+    .then(function (querySnapshot) {
+      querySnapshot.forEach(function (doc) {
+        let data = doc.data();
+        data.id = doc.id;
+        // doc.data() is never undefined for query doc snapshots
+        photos.push(data);
+      });
+    });
+  return photos;
+};
+
 // -------------insert firestore----------
 export const insertDB = (collection, doc, data) => {
   db.collection(collection)
@@ -53,7 +72,7 @@ export const updateDB = (collection, doc, data) => {
     });
 };
 
-// -------------update firestore----------
+// -------------update comment firestore----------
 export const updateComment = (collection, doc, data) => {
   db.collection(collection)
     .doc(doc)
