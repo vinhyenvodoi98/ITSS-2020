@@ -25,6 +25,7 @@ export var selectDB = async (collection, doc) => {
 
 // -------------search firestore----------
 export var searchDB = async (collection, label) => {
+  if (label.length > 10) label = label.slice(0, 10);
   var photos = [];
   // -------------select firestore----------
   await db

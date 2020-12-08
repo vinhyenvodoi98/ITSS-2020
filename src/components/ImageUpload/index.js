@@ -5,7 +5,7 @@ import { storage, db, auth, selectDB, insertDB } from 'firebaseConfig';
 import { Redirect } from 'react-router';
 import { message, Spin } from 'antd';
 import './index.css';
-import { getPictures } from 'store/actions';
+import { getPictures, searchPictures, setCurrentSearch } from 'store/actions';
 const axios = require('axios');
 
 const thumbsContainer = {
@@ -48,12 +48,13 @@ const img = {
   height: '100%'
 };
 
-function ImageUpload({ close }) {
+function ImageUpload({ close, isUpload }) {
   const dispatch = useDispatch();
   const [files, setFiles] = useState([]);
   const [currentUser, setCurrentUser] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [redirect] = useState(false);
+  const [searchDone, setSearchDone] = useState(false);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
@@ -168,12 +169,14 @@ function ImageUpload({ close }) {
                         img: currentUser.photoURL,
                         name: currentUser.displayName
                       },
-                      label: label.data
+                      label: label.data,
+                      size: Math.floor(file.size / 100000) / 10
                     })
                     .then(function (docRef) {
                       console.log('Document written with ID: ', docRef.id);
                       message.success('Upload successfully');
                       setIsLoading(false);
+                      setFiles([]);
                       dispatch(getPictures());
                       close();
                     })
@@ -193,9 +196,64 @@ function ImageUpload({ close }) {
     });
   };
 
+  const handleSearch = (close) => {
+    files.forEach((file) => {
+      setIsLoading(true);
+
+      var imageSize = new Image();
+      let fr = new FileReader();
+
+      fr.onload = function () {
+        if (fr !== null && typeof fr.result == 'string') {
+          imageSize.src = fr.result;
+        }
+      };
+      fr.readAsDataURL(file);
+
+      const image = file;
+      const uploadTask = storage.ref(`images/${image.path}`).put(image);
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {},
+        (error) => {
+          // error function ....
+          console.log(error);
+        },
+        () => {
+          storage
+            .ref('images')
+            .child(image.name)
+            .getDownloadURL()
+            .then(async (url) => {
+              console.log({ url });
+              try {
+                let label = await axios.post(
+                  'https://labelingimages.herokuapp.com/api/classify',
+                  {
+                    url
+                  }
+                );
+                console.log('label', label);
+
+                dispatch(searchPictures(label.data));
+                dispatch(setCurrentSearch(url));
+                setSearchDone(true);
+                setFiles([]);
+                setIsLoading(false);
+                close();
+              } catch (e) {
+                console.log(e);
+              }
+            });
+        }
+      );
+    });
+  };
+
   return (
     <div style={style}>
       {redirect ? <Redirect push to='/' /> : <></>}
+      {searchDone ? <Redirect push to='/search' /> : <></>}
       <br />
       <section className='container'>
         <div className='drag-box' {...getRootProps({ className: 'dropzone' })}>
@@ -207,9 +265,21 @@ function ImageUpload({ close }) {
         </aside>
 
         <div className='button-area'>
-          <button className='btn btn-light' onClick={() => handleUpload(close)}>
-            {'Upload'}
-          </button>
+          {isUpload ? (
+            <button
+              className='btn btn-light'
+              onClick={() => handleUpload(close)}
+            >
+              {'Upload'}
+            </button>
+          ) : (
+            <button
+              className='btn btn-light'
+              onClick={() => handleSearch(close)}
+            >
+              {'Search'}
+            </button>
+          )}
         </div>
       </section>
 
@@ -233,7 +303,6 @@ function ImageUpload({ close }) {
       ) : (
         ''
       )}
-
       <br />
     </div>
   );

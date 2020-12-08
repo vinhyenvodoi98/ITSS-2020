@@ -37,6 +37,14 @@ export const searchPictures = (label) => async (dispatch) => {
   });
 };
 
+export const SET_CURRENTSEARCH = 'SET_CURRENTSEARCH';
+export const setCurrentSearch = (currentSearch) => async (dispatch) => {
+  dispatch({
+    type: SET_CURRENTSEARCH,
+    currentSearch
+  });
+};
+
 export const SET_CURRENTUSER = 'SET_CURRENTUSER';
 export const setCurrentUsers = (currentUser) => async (dispatch) => {
   dispatch({

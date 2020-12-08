@@ -3,7 +3,8 @@ import * as actions from './actions';
 const initialState = {
   photos: [],
   search: [],
-  currentUser: null
+  currentUser: null,
+  currentSearch: null
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -22,6 +23,11 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         currentUser: action.currentUser
+      };
+    case actions.SET_CURRENTSEARCH:
+      return {
+        ...state,
+        currentSearch: action.currentSearch
       };
     default:
       return state;

@@ -14,6 +14,7 @@ import {
   getPictures,
   getSearch
 } from 'store/actions';
+import SearhByImages from 'components/SearchByImages';
 
 const { Option } = Select;
 
@@ -87,7 +88,7 @@ function Header() {
         </ul>
         <Select
           mode='multiple'
-          style={{ width: 400, marginRight: 20 }}
+          style={{ width: 400, borderRadius: '2px 0px 0px 2px !important' }}
           placeholder='Search images'
           optionFilterProp='children'
           onChange={onSearch}
@@ -98,6 +99,7 @@ function Header() {
             </Option>
           ))}
         </Select>
+        <SearhByImages />
         {!!currentUser ? (
           <ul className='navbar-nav'>
             <li>
@@ -157,7 +159,7 @@ function Header() {
         effect='fadeInUp'
         onClickAway={() => setvisible(false)}
       >
-        <ImageUpload close={() => setvisible(false)} />
+        <ImageUpload close={() => setvisible(false)} isUpload={true} />
       </Modal>
     </nav>
   );

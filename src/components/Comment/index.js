@@ -57,7 +57,7 @@ export default function CommentA({ doc, comment, setComment }) {
   );
 
   return (
-    <div className='comment'>
+    <>
       <div className='like'>
         <Tooltip key='comment-basic-like' title='Like'>
           <span onClick={like}>
@@ -75,38 +75,39 @@ export default function CommentA({ doc, comment, setComment }) {
           </span>
         </Tooltip>
       </div>
+      <div className='comment'>
+        <hr />
+        {!!comment && <CommentList comments={comment} />}
 
-      <hr />
-      {!!comment && <CommentList comments={comment} />}
-
-      {currentUser ? (
-        <Comment
-          avatar={
-            <Avatar
-              src={currentUser ? currentUser.photoURL : ''}
-              size={40}
-              alt='Han Solo'
-            />
-          }
-          content={
-            <>
-              <Form.Item>
-                <Input
-                  style={{ marginTop: '5px' }}
-                  placeholder='Comments'
-                  onChange={(e) => setValue(e.target.value)}
-                  onKeyPress={(event) =>
-                    event.which === 13 ? handleSubmit() : ''
-                  }
-                  value={value}
-                />
-              </Form.Item>
-            </>
-          }
-        />
-      ) : (
-        ''
-      )}
-    </div>
+        {currentUser ? (
+          <Comment
+            avatar={
+              <Avatar
+                src={currentUser ? currentUser.photoURL : ''}
+                size={40}
+                alt='Han Solo'
+              />
+            }
+            content={
+              <>
+                <Form.Item>
+                  <Input
+                    style={{ marginTop: '5px' }}
+                    placeholder='Comments'
+                    onChange={(e) => setValue(e.target.value)}
+                    onKeyPress={(event) =>
+                      event.which === 13 ? handleSubmit() : ''
+                    }
+                    value={value}
+                  />
+                </Form.Item>
+              </>
+            }
+          />
+        ) : (
+          ''
+        )}
+      </div>
+    </>
   );
 }

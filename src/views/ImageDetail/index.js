@@ -86,7 +86,8 @@ export default function ImageDetail() {
         style={{
           width: '80vw',
           height: '80vh',
-          borderRadius: '10px'
+          borderRadius: '10px',
+          marginTop: '3vh'
         }}
       >
         {photo ? (
@@ -102,7 +103,7 @@ export default function ImageDetail() {
             >
               <img
                 alt={photo.title}
-                style={{ height: '100%', width: '100%', display: 'flex' }}
+                style={{ height: 'auto', width: '100%', display: 'flex' }}
                 {...photo}
               />
             </div>
@@ -152,6 +153,11 @@ export default function ImageDetail() {
                   </p>
                 </div>
               </div>
+              <div>
+                <p style={{ marginTop: '1vh', marginBottom: '0' }}>
+                  <strong>Size : {photo.size} MB</strong>
+                </p>
+              </div>
               <CommentA
                 doc={id}
                 comment={photo.comment}
@@ -164,7 +170,7 @@ export default function ImageDetail() {
         )}
       </div>
       <div className='relation'>
-        <h1>Relation</h1>
+        <h1>Similar Picture</h1>
         {!!photos ? <Images photos={photos} /> : ''}
       </div>
     </div>
