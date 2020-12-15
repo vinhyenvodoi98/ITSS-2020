@@ -48,7 +48,8 @@ function Header() {
   const signout = () => {
     signOut();
     setCurrentUser('');
-    dispatch(setCurrentUser(null));
+    dispatch(setCurrentUsers(null));
+    window.location.href = '/';
   };
 
   return (
@@ -115,13 +116,18 @@ function Header() {
               />
             </li>
             <li>
-              <Avatar
-                size={40}
-                src={auth.currentUser ? auth.currentUser.photoURL : ''}
-                style={{ marginLeft: '20px' }}
-              ></Avatar>
+              <Link to={`/user/${auth.currentUser.uid}`}>
+                <Avatar
+                  size={40}
+                  src={auth.currentUser ? auth.currentUser.photoURL : ''}
+                  style={{ marginLeft: '20px' }}
+                ></Avatar>
+              </Link>
             </li>
-            <li className='nav-link'>{auth.currentUser.displayName}</li>
+            <Link to={`/user/${auth.currentUser.uid}`}>
+              <li className='nav-link'>{auth.currentUser.displayName}</li>
+            </Link>
+
             <li>
               <Tooltip placement='topLeft' title='Logout'>
                 <Button

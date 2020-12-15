@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { Avatar, Tag, message, Button } from 'antd';
 import { storage, selectDB, updateDB, searchDB } from 'firebaseConfig';
 import CommentA from 'components/Comment';
@@ -142,11 +142,13 @@ export default function ImageDetail() {
                   <strong>Author</strong>
                 </p>
                 <div style={{ display: 'flex' }}>
-                  <Avatar
-                    size={40}
-                    src={photo.author ? photo.author.img : ''}
-                    style={{ marginRight: '20px' }}
-                  ></Avatar>
+                  <Link to={`/user/${photo.author.uid}`}>
+                    <Avatar
+                      size={40}
+                      src={photo.author ? photo.author.img : ''}
+                      style={{ marginRight: '20px' }}
+                    ></Avatar>
+                  </Link>
 
                   <p>
                     <strong>{photo.author ? photo.author.name : ''}</strong>

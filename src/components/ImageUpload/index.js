@@ -167,7 +167,8 @@ function ImageUpload({ close, isUpload }) {
                       title: image.name,
                       author: {
                         img: currentUser.photoURL,
-                        name: currentUser.displayName
+                        name: currentUser.displayName,
+                        uid: currentUser.uid
                       },
                       label: label.data,
                       size: Math.floor(file.size / 100000) / 10

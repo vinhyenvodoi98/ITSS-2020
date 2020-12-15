@@ -9,6 +9,7 @@ import {
   DislikeFilled,
   LikeFilled
 } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 
 export default function CommentA({ doc, comment, setComment }) {
   const [value, setValue] = useState('');
@@ -41,6 +42,7 @@ export default function CommentA({ doc, comment, setComment }) {
     await updateComment('pictures', doc, {
       author: currentUser.displayName,
       avatar: currentUser.photoURL,
+      uid: currentUser.uid,
       content: value,
       datetime: moment().fromNow()
     });
@@ -82,11 +84,13 @@ export default function CommentA({ doc, comment, setComment }) {
         {currentUser ? (
           <Comment
             avatar={
-              <Avatar
-                src={currentUser ? currentUser.photoURL : ''}
-                size={40}
-                alt='Han Solo'
-              />
+              <Link to={`/user/${currentUser.uid}`}>
+                <Avatar
+                  src={currentUser ? currentUser.photoURL : ''}
+                  size={40}
+                  alt='Han Solo'
+                />
+              </Link>
             }
             content={
               <>

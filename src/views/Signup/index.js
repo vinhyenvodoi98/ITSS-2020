@@ -28,7 +28,13 @@ export default function Signup() {
       if (!!currentUser) {
         var isExists = await selectDB('users', currentUser.uid);
         if (!isExists) {
-          insertDB('users', currentUser.uid, { downloadTime: 10000 });
+          insertDB('users', currentUser.uid, {
+            uid: currentUser.uid,
+            displayName: currentUser.displayName,
+            photoURL: currentUser.photoURL,
+            email: currentUser.email,
+            downloadTime: 10000
+          });
         }
       }
     };
