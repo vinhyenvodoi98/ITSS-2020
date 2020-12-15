@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Select, Avatar, Tooltip, Button } from 'antd';
-import { CloudUploadOutlined, LogoutOutlined } from '@ant-design/icons';
+import { LogoutOutlined } from '@ant-design/icons';
 import { auth, signOut } from 'firebaseConfig';
-import Modal from 'react-awesome-modal';
 
 import './index.css';
-import ImageUpload from 'components/ImageUpload';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   setCurrentUsers,
@@ -15,11 +13,11 @@ import {
   getSearch
 } from 'store/actions';
 import SearhByImages from 'components/SearchByImages';
+import UploadModal from 'components/UploadModal';
 
 const { Option } = Select;
 
 function Header() {
-  const [visible, setvisible] = useState(false);
   const [currentUser, setCurrentUser] = useState('');
   const search = useSelector((state) => state.search);
   const onSearch = async (value) => {
@@ -104,16 +102,7 @@ function Header() {
         {!!currentUser ? (
           <ul className='navbar-nav'>
             <li>
-              <CloudUploadOutlined
-                style={{
-                  width: '32px',
-                  height: '32px',
-                  color: 'white',
-                  fontSize: '32px',
-                  cursor: 'pointer'
-                }}
-                onClick={() => setvisible(true)}
-              />
+              <UploadModal />
             </li>
             <li>
               <Link to={`/user/${auth.currentUser.uid}`}>
@@ -158,15 +147,6 @@ function Header() {
           </ul>
         )}
       </div>
-      <Modal
-        visible={visible}
-        width='721px'
-        height='500px'
-        effect='fadeInUp'
-        onClickAway={() => setvisible(false)}
-      >
-        <ImageUpload close={() => setvisible(false)} isUpload={true} />
-      </Modal>
     </nav>
   );
 }

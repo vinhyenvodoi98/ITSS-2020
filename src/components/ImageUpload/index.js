@@ -1,11 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useDropzone } from 'react-dropzone';
-import { storage, db, auth, selectDB, insertDB } from 'firebaseConfig';
+import {
+  storage,
+  db,
+  auth,
+  selectDB,
+  insertDB,
+  updatePhotoAlbums
+} from 'firebaseConfig';
 import { Redirect } from 'react-router';
-import { message, Spin } from 'antd';
+import { message, Spin, Row, Col } from 'antd';
 import './index.css';
 import { getPictures, searchPictures, setCurrentSearch } from 'store/actions';
+import SelectAlbum from 'components/SelectAlbum';
 const axios = require('axios');
 
 const thumbsContainer = {
@@ -55,6 +63,7 @@ function ImageUpload({ close, isUpload }) {
   const [isLoading, setIsLoading] = useState(false);
   const [redirect] = useState(false);
   const [searchDone, setSearchDone] = useState(false);
+  const [currentAlbum, setcurrentAlbum] = useState('');
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
@@ -173,9 +182,14 @@ function ImageUpload({ close, isUpload }) {
                       label: label.data,
                       size: Math.floor(file.size / 100000) / 10
                     })
-                    .then(function (docRef) {
+                    .then(async function (docRef) {
                       console.log('Document written with ID: ', docRef.id);
                       message.success('Upload successfully');
+                      await updatePhotoAlbums(
+                        'albums',
+                        currentAlbum,
+                        docRef.id
+                      );
                       setIsLoading(false);
                       setFiles([]);
                       dispatch(getPictures());
@@ -257,29 +271,69 @@ function ImageUpload({ close, isUpload }) {
       {searchDone ? <Redirect push to='/search' /> : <></>}
       <br />
       <section className='container'>
-        <div className='drag-box' {...getRootProps({ className: 'dropzone' })}>
-          <input {...getInputProps()} />
-          <p>{'Drag and Drop your image here'}</p>
-        </div>
-        <aside style={thumbsContainer} onClick={removeImage}>
-          {thumbs}
-        </aside>
-
         <div className='button-area'>
           {isUpload ? (
-            <button
-              className='btn btn-light'
-              onClick={() => handleUpload(close)}
-            >
-              {'Upload'}
-            </button>
+            <Row gutter={16} style={{ height: '100%' }}>
+              <Col className='gutter-row' span={14}>
+                <div
+                  className='drag-box-search'
+                  style={{ background: '#efefef' }}
+                >
+                  <div
+                    className='drag-box'
+                    {...getRootProps({ className: 'dropzone' })}
+                  >
+                    <input {...getInputProps()} />
+                    <p>{'Drag and Drop your image here'}</p>
+                  </div>
+                </div>
+              </Col>
+              <Col className='gutter-row' span={10} style={{ height: '100%' }}>
+                <div style={{ display: 'flex' }}>
+                  <SelectAlbum setcurrentAlbum={setcurrentAlbum} />
+                  <button
+                    className='btn btn-light'
+                    style={{
+                      background: 'red',
+                      height: '32px'
+                    }}
+                    onClick={() => handleUpload(close)}
+                  >
+                    <strong style={{ color: 'white' }}>{'Upload'}</strong>
+                  </button>
+                </div>
+
+                <aside style={thumbsContainer} onClick={removeImage}>
+                  {thumbs}
+                </aside>
+              </Col>
+            </Row>
           ) : (
-            <button
-              className='btn btn-light'
-              onClick={() => handleSearch(close)}
-            >
-              {'Search'}
-            </button>
+            <Row gutter={16} style={{ height: '100%' }}>
+              <Col className='gutter-row' span={16}>
+                <div className='drag-box-search'>
+                  <div
+                    className='drag-box'
+                    {...getRootProps({ className: 'dropzone' })}
+                  >
+                    <input {...getInputProps()} />
+                    <p>{'Drag and Drop your image here'}</p>
+                  </div>
+                </div>
+              </Col>
+              <Col className='gutter-row' span={8} style={{ height: '100%' }}>
+                <aside style={thumbsContainer} onClick={removeImage}>
+                  {thumbs}
+                </aside>
+                <button
+                  className='btn btn-light'
+                  style={{ borderRadius: '15px', background: '#efefef' }}
+                  onClick={() => handleSearch(close)}
+                >
+                  <strong>{'Search'}</strong>
+                </button>
+              </Col>
+            </Row>
           )}
         </div>
       </section>

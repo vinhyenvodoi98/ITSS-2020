@@ -90,6 +90,41 @@ export const updateComment = (collection, doc, data) => {
     });
 };
 
+// -------------update comment firestore----------
+export const updateAlbums = (collection, doc, data) => {
+  db.collection(collection)
+    .doc(doc)
+    .update({
+      albums: firebase.firestore.FieldValue.arrayUnion(data)
+    })
+    .then(function () {
+      console.log('Document successfully written!');
+      // message.success('Upload successfully');
+    })
+    .catch(function (error) {
+      console.error('Error adding document: ', error);
+      // message.error('Upload failed');
+    });
+};
+
+// -------------update comment firestore----------
+export const updatePhotoAlbums = (collection, doc, data) => {
+  console.log(doc, data);
+  db.collection(collection)
+    .doc(doc)
+    .update({
+      photo: firebase.firestore.FieldValue.arrayUnion(data)
+    })
+    .then(function () {
+      console.log('Document successfully written!');
+      // message.success('Upload successfully');
+    })
+    .catch(function (error) {
+      console.error('Error adding document: ', error);
+      // message.error('Upload failed');
+    });
+};
+
 // -------------Google----------------
 const provider = new firebase.auth.GoogleAuthProvider();
 provider.setCustomParameters({ prompt: 'select_account' });
