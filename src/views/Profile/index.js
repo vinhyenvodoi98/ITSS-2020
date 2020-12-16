@@ -2,18 +2,27 @@ import { Avatar } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { selectDB } from 'firebaseConfig';
+import { selectDB, selectPictureFromAuthor } from 'firebaseConfig';
+import ViewTab from 'components/ViewTab';
 
 export default function Profile() {
   let { id } = useParams();
   const [user, setUser] = useState(null);
   const currentUser = useSelector((state) => state.currentUser);
+  const [photos, setPhotos] = useState([]);
 
   useEffect(() => {
     const fetchProfile = async () => {
       setUser(await selectDB('users', id));
     };
     fetchProfile();
+  }, [id]);
+
+  useEffect(() => {
+    const getPhoto = async () => {
+      setPhotos(await selectPictureFromAuthor('pictures', id));
+    };
+    getPhoto();
   }, [id]);
 
   return (
@@ -30,6 +39,7 @@ export default function Profile() {
           ) : (
             <></>
           )}
+          <ViewTab photos={photos} albums={user.albums} />
         </div>
       ) : (
         <></>

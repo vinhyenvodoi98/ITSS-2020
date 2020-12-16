@@ -23,6 +23,24 @@ export var selectDB = async (collection, doc) => {
   }
 };
 
+// -------------select firestore----------
+export var selectPictureFromAuthor = async (collection, uid) => {
+  var photos = [];
+  await db
+    .collection(collection)
+    .where(`author.uid`, '==', uid)
+    .get()
+    .then(function (querySnapshot) {
+      querySnapshot.forEach(function (doc) {
+        let data = doc.data();
+        data.id = doc.id;
+        // doc.data() is never undefined for query doc snapshots
+        photos.push(data);
+      });
+    });
+  return photos;
+};
+
 // -------------search firestore----------
 export var searchDB = async (collection, label) => {
   if (label.length > 10) label = label.slice(0, 10);
