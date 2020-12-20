@@ -39,7 +39,7 @@ export default function Profile() {
           ) : (
             <></>
           )}
-          <ViewTab photos={photos} albums={user.albums} />
+          <ViewTab photos={photos} user={user} />
         </div>
       ) : (
         <></>
