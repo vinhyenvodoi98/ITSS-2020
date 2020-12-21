@@ -1,8 +1,10 @@
-import { Tabs, Col, Row } from 'antd';
+import { Tabs, Col, Row, Button } from 'antd';
 import Images from 'components/Images';
 import { useState, useEffect } from 'react';
 import { updatePhotoToAlbums } from 'firebaseConfig';
 import { Link } from 'react-router-dom';
+import { PlusOutlined } from '@ant-design/icons';
+import UploadModal from 'components/UploadModal';
 const { TabPane } = Tabs;
 
 export default function ViewTab({ photos, user }) {
@@ -40,6 +42,16 @@ export default function ViewTab({ photos, user }) {
           <Images photos={photos} />
         </TabPane>
         <TabPane tab='Albums' key='2'>
+          <div
+            style={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'flex-end'
+            }}
+          >
+            <UploadModal isAddAlbum={true} />
+          </div>
+
           {key === 2 ? (
             <div
               style={{
