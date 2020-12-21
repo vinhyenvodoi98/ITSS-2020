@@ -102,6 +102,7 @@ export default function ImageDetail() {
               }}
             >
               <img
+                onContextMenu={(e) => e.preventDefault()}
                 alt={photo.title}
                 style={{ height: 'auto', width: '100%', display: 'flex' }}
                 {...photo}

@@ -5,8 +5,13 @@ import { selectDB } from 'firebaseConfig';
 
 function Images({ photo }) {
   return (
-    <Col className='gutter-row' span={6} style={{ height: '60vh' }}>
-      {console.log(photo)}
+    <Col
+      onContextMenu={(e) => e.preventDefault()}
+      id='my_image'
+      className='gutter-row'
+      span={6}
+      style={{ height: '60vh' }}
+    >
       <Row
         justify='center'
         style={{
@@ -53,7 +58,6 @@ export default function Album() {
     <div className='detail_images' style={{ padding: '3vw' }}>
       <h1>Night</h1>
       <Row gutter={[16, 24]}>
-        {console.log(photos)}
         {!!photos ? (
           photos.map((photo, index) => <Images key={index} photo={photo} />)
         ) : (

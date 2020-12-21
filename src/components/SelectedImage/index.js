@@ -47,6 +47,7 @@ const SelectedImage = ({
     >
       <Link to={`/images/${photo.title}/${photo.id}`}>
         <img
+          onContextMenu={(e) => e.preventDefault()}
           alt={photo.title}
           style={{ ...imgStyle }}
           {...photo}
