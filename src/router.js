@@ -5,6 +5,7 @@ import Signup from 'views/Signup';
 import ImageDetail from 'views/ImageDetail';
 import Search from 'views/Search';
 import Profile from 'views/Profile';
+import Album from 'views/Album';
 
 function Router() {
   return (
@@ -16,6 +17,7 @@ function Router() {
       <Route exact path='/images/:title/:id' component={ImageDetail} />
       <Route exact path='/search/' component={Search} />
       <Route exact path='/signup' component={Signup} />
+      <Route exact path='/album/:id' component={Album} />
       <Route exact path='/user/:id' component={Profile} />
       {/* {content.LoginStatus.isLogin ? (
         <Switch>

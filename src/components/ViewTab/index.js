@@ -2,6 +2,7 @@ import { Tabs, Col, Row } from 'antd';
 import Images from 'components/Images';
 import { useState, useEffect } from 'react';
 import { updatePhotoToAlbums } from 'firebaseConfig';
+import { Link } from 'react-router-dom';
 const { TabPane } = Tabs;
 
 export default function ViewTab({ photos, user }) {
@@ -39,7 +40,6 @@ export default function ViewTab({ photos, user }) {
           <Images photos={photos} />
         </TabPane>
         <TabPane tab='Albums' key='2'>
-          {console.log(key)}
           {key === 2 ? (
             <div
               style={{
@@ -48,97 +48,100 @@ export default function ViewTab({ photos, user }) {
             >
               {albums.map((album, index) =>
                 !!album.photos ? (
-                  <div style={{ padding: '10px 15px' }} key={index}>
-                    <div
-                      className='box'
-                      style={{
-                        borderRadius: '20px',
-                        width: '200px',
-                        height: '150px',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      <Row gutter={16} style={{ height: '100%' }}>
-                        <Col
-                          className='gutter-row'
-                          span={16}
-                          style={{
-                            backgroundColor: 'red',
-                            borderRadius: '15px 0px 0px 15px',
-                            padding: '0'
-                          }}
-                        >
-                          {album.photos[0] ? (
-                            <img
-                              src={album.photos[0].src}
-                              alt='1'
+                  <Link key={index} to={`/album/${album.value}`}>
+                    <div style={{ padding: '10px 15px' }}>
+                      {console.log(album)}
+                      <div
+                        className='box'
+                        style={{
+                          borderRadius: '20px',
+                          width: '200px',
+                          height: '150px',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        <Row gutter={16} style={{ height: '100%' }}>
+                          <Col
+                            className='gutter-row'
+                            span={16}
+                            style={{
+                              backgroundColor: 'red',
+                              borderRadius: '15px 0px 0px 15px',
+                              padding: '0'
+                            }}
+                          >
+                            {album.photos[0] ? (
+                              <img
+                                src={album.photos[0].src}
+                                alt='1'
+                                style={{
+                                  height: '100%',
+                                  width: '100%',
+                                  borderRadius: '15px 0px 0px 15px',
+                                  objectFit: 'cover'
+                                }}
+                              />
+                            ) : (
+                              <></>
+                            )}
+                          </Col>
+                          <Col span={8} style={{ padding: '0px' }}>
+                            <Col
                               style={{
-                                height: '100%',
-                                width: '100%',
-                                borderRadius: '15px 0px 0px 15px',
-                                objectFit: 'cover'
+                                backgroundColor: 'grey',
+                                height: '50%',
+                                borderRadius: '0px 15px 0px 0px',
+                                padding: '0'
                               }}
-                            />
-                          ) : (
-                            <></>
-                          )}
-                        </Col>
-                        <Col span={8} style={{ padding: '0px' }}>
-                          <Col
-                            style={{
-                              backgroundColor: 'grey',
-                              height: '50%',
-                              borderRadius: '0px 15px 0px 0px',
-                              padding: '0'
-                            }}
-                          >
-                            {album.photos[1] ? (
-                              <img
-                                src={album.photos[1].src}
-                                alt='1'
-                                style={{
-                                  height: '100%',
-                                  width: '100%',
-                                  borderRadius: '0px 15px 0px 0px',
-                                  objectFit: 'cover'
-                                }}
-                              />
-                            ) : (
-                              <></>
-                            )}
+                            >
+                              {album.photos[1] ? (
+                                <img
+                                  src={album.photos[1].src}
+                                  alt='1'
+                                  style={{
+                                    height: '100%',
+                                    width: '100%',
+                                    borderRadius: '0px 15px 0px 0px',
+                                    objectFit: 'cover'
+                                  }}
+                                />
+                              ) : (
+                                <></>
+                              )}
+                            </Col>
+                            <Col
+                              style={{
+                                backgroundColor: '#c3cfe2',
+                                height: '50%',
+                                borderRadius: '0px 0px 15px 0px',
+                                padding: '0'
+                              }}
+                            >
+                              {album.photos[2] ? (
+                                <img
+                                  src={album.photos[2].src}
+                                  alt='1'
+                                  style={{
+                                    height: '100%',
+                                    width: '100%',
+                                    borderRadius: '0px 0px 15px 0px',
+                                    objectFit: 'cover'
+                                  }}
+                                />
+                              ) : (
+                                <></>
+                              )}
+                            </Col>
                           </Col>
-                          <Col
-                            style={{
-                              backgroundColor: '#c3cfe2',
-                              height: '50%',
-                              borderRadius: '0px 0px 15px 0px',
-                              padding: '0'
-                            }}
-                          >
-                            {album.photos[2] ? (
-                              <img
-                                src={album.photos[2].src}
-                                alt='1'
-                                style={{
-                                  height: '100%',
-                                  width: '100%',
-                                  borderRadius: '0px 0px 15px 0px',
-                                  objectFit: 'cover'
-                                }}
-                              />
-                            ) : (
-                              <></>
-                            )}
-                          </Col>
-                        </Col>
-                      </Row>
+                        </Row>
+                      </div>
+                      <p style={{ textAlign: 'center' }}>
+                        <strong>{album.label}</strong>
+                      </p>
                     </div>
-                    <p style={{ textAlign: 'center' }}>
-                      <strong>{album.label}</strong>
-                    </p>
-                  </div>
+                  </Link>
                 ) : (
-                  <></>
+                  <p key={index}></p>
                 )
               )}
             </div>
