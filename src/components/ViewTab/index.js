@@ -1,9 +1,8 @@
-import { Tabs, Col, Row, Button } from 'antd';
+import { Tabs, Col, Row } from 'antd';
 import Images from 'components/Images';
 import { useState, useEffect } from 'react';
 import { updatePhotoToAlbums } from 'firebaseConfig';
 import { Link } from 'react-router-dom';
-import { PlusOutlined } from '@ant-design/icons';
 import UploadModal from 'components/UploadModal';
 const { TabPane } = Tabs;
 
