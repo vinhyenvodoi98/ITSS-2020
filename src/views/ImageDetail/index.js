@@ -10,12 +10,15 @@ import Images from 'components/Images';
 export default function ImageDetail() {
   let { title, id } = useParams();
   const currentUser = useSelector((state) => state.currentUser);
+  const [author, setAuthor] = useState();
   const [photo, setPhoto] = useState();
   const [photos, setPhotos] = useState();
 
   useEffect(() => {
     const updatePhoto = async () => {
-      setPhoto(await selectDB('pictures', id));
+      var photo = await selectDB('pictures', id);
+      setPhoto(photo);
+      setAuthor(await selectDB('users', photo.author.uid));
     };
     updatePhoto();
   }, [setPhoto, id]);
@@ -146,13 +149,13 @@ export default function ImageDetail() {
                   <Link to={`/user/${photo.author.uid}`}>
                     <Avatar
                       size={40}
-                      src={photo.author ? photo.author.img : ''}
+                      src={author ? author.photoURL : ''}
                       style={{ marginRight: '20px' }}
                     ></Avatar>
                   </Link>
 
                   <p>
-                    <strong>{photo.author ? photo.author.name : ''}</strong>
+                    <strong>{author ? author.displayName : ''}</strong>
                   </p>
                 </div>
               </div>

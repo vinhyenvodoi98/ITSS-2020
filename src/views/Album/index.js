@@ -96,7 +96,7 @@ export default function Album() {
         {!!photos ? (
           photos.map((photo, index) => <Images key={index} photo={photo} />)
         ) : (
-          <p>loading</p>
+          <p>Loading</p>
         )}
       </Row>
       <Modal

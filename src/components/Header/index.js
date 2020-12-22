@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Select, Avatar, Tooltip, Button } from 'antd';
 import { LogoutOutlined } from '@ant-design/icons';
-import { auth, signOut } from 'firebaseConfig';
+import { auth, signOut, selectDB } from 'firebaseConfig';
 
 import './index.css';
 import { useDispatch, useSelector } from 'react-redux';
@@ -28,10 +28,11 @@ function Header() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((authUser) => {
+    const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
       if (authUser) {
-        setCurrentUser(authUser);
-        dispatch(setCurrentUsers(authUser));
+        let user = await selectDB('users', authUser.uid);
+        setCurrentUser(user);
+        dispatch(setCurrentUsers(user));
       }
     });
     return () => {
@@ -105,16 +106,16 @@ function Header() {
               <UploadModal />
             </li>
             <li>
-              <Link to={`/user/${auth.currentUser.uid}`}>
+              <Link to={`/user/${currentUser.uid}`}>
                 <Avatar
                   size={40}
-                  src={auth.currentUser ? auth.currentUser.photoURL : ''}
+                  src={currentUser ? currentUser.photoURL : ''}
                   style={{ marginLeft: '20px' }}
                 ></Avatar>
               </Link>
             </li>
-            <Link to={`/user/${auth.currentUser.uid}`}>
-              <li className='nav-link'>{auth.currentUser.displayName}</li>
+            <Link to={`/user/${currentUser.uid}`}>
+              <li className='nav-link'>{currentUser.displayName}</li>
             </Link>
 
             <li>

@@ -207,6 +207,7 @@ function ImageUpload({ close, isUpload }) {
         );
       } else {
         alert(`${file.name} is must be over 1MB`);
+        setIsLoading(false);
       }
     });
   };
