@@ -2,13 +2,16 @@ import { Tabs, Col, Row } from 'antd';
 import Images from 'components/Images';
 import { useState, useEffect } from 'react';
 import { updatePhotoToAlbums } from 'firebaseConfig';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import UploadModal from 'components/UploadModal';
+import { useSelector } from 'react-redux';
 const { TabPane } = Tabs;
 
 export default function ViewTab({ photos, user }) {
+  let { id } = useParams();
   const [albums, setAlbums] = useState([]);
   const [key, setKey] = useState(1);
+  const currentUser = useSelector((state) => state.currentUser);
 
   useEffect(() => {
     setTimeout(() => {
@@ -41,15 +44,19 @@ export default function ViewTab({ photos, user }) {
           <Images photos={photos} />
         </TabPane>
         <TabPane tab='Albums' key='2'>
-          <div
-            style={{
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'flex-end'
-            }}
-          >
-            <UploadModal isAddAlbum={true} />
-          </div>
+          {!!currentUser && currentUser.uid === id ? (
+            <div
+              style={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-end'
+              }}
+            >
+              <UploadModal isAddAlbum={true} />
+            </div>
+          ) : (
+            <></>
+          )}
 
           {key === 2 ? (
             <div
@@ -61,7 +68,6 @@ export default function ViewTab({ photos, user }) {
                 !!album.photos ? (
                   <Link key={index} to={`/album/${album.value}`}>
                     <div style={{ padding: '10px 15px' }}>
-                      {console.log(album)}
                       <div
                         className='box'
                         style={{

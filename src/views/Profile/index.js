@@ -35,7 +35,6 @@ export default function Profile() {
   };
 
   const handleOk = async () => {
-    console.log(imageFile);
     if (!!imageFile) {
       //////////////////
       //////////////////

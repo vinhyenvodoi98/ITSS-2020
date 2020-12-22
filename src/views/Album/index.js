@@ -1,7 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { Row, Col, Button, Input } from 'antd';
 import { useEffect, useState } from 'react';
-import { selectDB } from 'firebaseConfig';
+import { selectDB, updateDB } from 'firebaseConfig';
 import { EllipsisOutlined } from '@ant-design/icons';
 import Modal from 'antd/lib/modal/Modal';
 import TextArea from 'antd/lib/input/TextArea';
@@ -48,12 +48,31 @@ export default function Album() {
   const [photos, setPhotos] = useState([]);
   const [albumName, setAlbumName] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalSureVisible, setIsModalSureVisible] = useState(false);
+  const [newAlbumName, setNewAlbumName] = useState('');
+
+  const showModalSure = () => {
+    setIsModalSureVisible(true);
+  };
+
+  const handleOkSure = () => {
+    setIsModalSureVisible(false);
+    setIsModalVisible(false);
+  };
+
+  const handleCancelSure = () => {
+    setIsModalSureVisible(false);
+  };
 
   const showModal = () => {
     setIsModalVisible(true);
   };
 
-  const handleOk = () => {
+  const handleOk = async () => {
+    await updateDB('albums', id, { name: newAlbumName });
+    let index = currentUser.albums.findIndex((i) => i.value === id);
+    currentUser.albums[index].label = newAlbumName;
+    await updateDB('users', currentUser.uid, currentUser);
     setIsModalVisible(false);
   };
 
@@ -80,7 +99,8 @@ export default function Album() {
         style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}
       >
         <h1 style={{ marginBottom: 0, marginRight: '15px' }}> {albumName}</h1>
-        {currentUser.albums.some((album) => album.value === id) ? (
+        {!!currentUser &&
+        currentUser.albums.some((album) => album.value === id) ? (
           <Button
             type='primary'
             style={{ backgroundColor: '#efefef', borderColor: '#efefef' }}
@@ -105,16 +125,59 @@ export default function Album() {
       <Modal
         title='Update Album'
         visible={isModalVisible}
-        onOk={handleOk}
         onCancel={handleCancel}
+        footer={[
+          <Button type='primary' danger key='2' onClick={showModalSure}>
+            Delete
+          </Button>,
+          <Button type='primary' key='1' onClick={handleOk}>
+            OK
+          </Button>
+        ]}
       >
         <h5 style={{ marginBottom: 0 }}>Name</h5>
-        <Input style={{ marginBottom: '15px' }} placeholder={albumName} />
+        <Input
+          style={{ marginBottom: '15px' }}
+          placeholder={albumName}
+          onChange={(e) => setNewAlbumName(e.target.value)}
+        />
         <h5 style={{ marginBottom: 0 }}>Description</h5>
         <TextArea
           placeholder='Some thing amazing'
           autoSize={{ minRows: 2, maxRows: 6 }}
         />
+      </Modal>
+
+      <Modal
+        title='Are you sure you want to delete this album ?'
+        visible={isModalSureVisible}
+        onCancel={handleCancelSure}
+        footer={[]}
+      >
+        <div style={{ width: '100%' }}>
+          <Button
+            type='primary'
+            style={{
+              width: '100%',
+              backgroundColor: '#efefef',
+              borderColor: '#efefef',
+              borderRadius: '15px',
+              marginBottom: '15px',
+              color: 'black'
+            }}
+            onClick={handleCancelSure}
+          >
+            <strong>Cancle</strong>
+          </Button>
+          <Button
+            type='primary'
+            danger
+            style={{ width: '100%', borderRadius: '15px' }}
+            onClick={handleOkSure}
+          >
+            <strong>Delete</strong>
+          </Button>
+        </div>
       </Modal>
     </div>
   );
