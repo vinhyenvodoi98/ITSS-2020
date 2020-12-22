@@ -1,7 +1,7 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, Redirect } from 'react-router-dom';
 import { Row, Col, Button, Input } from 'antd';
 import { useEffect, useState } from 'react';
-import { selectDB, updateDB } from 'firebaseConfig';
+import { selectDB, updateDB, deleteDB } from 'firebaseConfig';
 import { EllipsisOutlined } from '@ant-design/icons';
 import Modal from 'antd/lib/modal/Modal';
 import TextArea from 'antd/lib/input/TextArea';
@@ -50,12 +50,19 @@ export default function Album() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalSureVisible, setIsModalSureVisible] = useState(false);
   const [newAlbumName, setNewAlbumName] = useState('');
+  const [routerTo, setRouterTo] = useState();
 
   const showModalSure = () => {
     setIsModalSureVisible(true);
   };
 
-  const handleOkSure = () => {
+  const handleOkSure = async () => {
+    photos.forEach((photo) => deleteDB('pictures', photo.id));
+    await deleteDB('albums', id);
+    let index = currentUser.albums.findIndex((i) => i.value === id);
+    currentUser.albums.splice(index, 1);
+    await updateDB('users', currentUser.uid, currentUser);
+    setRouterTo('user');
     setIsModalSureVisible(false);
     setIsModalVisible(false);
   };
@@ -95,6 +102,7 @@ export default function Album() {
 
   return (
     <div className='detail_images' style={{ padding: '3vw' }}>
+      {!!routerTo ? <Redirect to={`/user/${currentUser.uid}`} /> : <></>}
       <div
         style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}
       >
@@ -167,7 +175,7 @@ export default function Album() {
             }}
             onClick={handleCancelSure}
           >
-            <strong>Cancle</strong>
+            <strong>Cancel</strong>
           </Button>
           <Button
             type='primary'

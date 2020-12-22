@@ -142,7 +142,6 @@ export const updateAlbums = (collection, doc, data) => {
 
 // -------------update comment firestore----------
 export const updatePhotoAlbums = (collection, doc, data) => {
-  console.log(doc, data);
   db.collection(collection)
     .doc(doc)
     .update({
@@ -150,6 +149,21 @@ export const updatePhotoAlbums = (collection, doc, data) => {
     })
     .then(function () {
       console.log('Document successfully written!');
+      // message.success('Upload successfully');
+    })
+    .catch(function (error) {
+      console.error('Error adding document: ', error);
+      // message.error('Upload failed');
+    });
+};
+
+// -------------update comment firestore----------
+export const deleteDB = (collection, doc) => {
+  db.collection(collection)
+    .doc(doc)
+    .delete()
+    .then(function () {
+      console.log('Document successfully deleted!');
       // message.success('Upload successfully');
     })
     .catch(function (error) {
