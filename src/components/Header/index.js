@@ -81,7 +81,7 @@ function Header() {
             </Link>
           </li>
           <li className='nav-item active'>
-            <Link className='nav-link' to='/'>
+            <Link className='nav-link' to='/credit'>
               Dùng pro
             </Link>
           </li>
