@@ -5,6 +5,7 @@ import { selectDB } from 'firebaseConfig';
 import { EllipsisOutlined } from '@ant-design/icons';
 import Modal from 'antd/lib/modal/Modal';
 import TextArea from 'antd/lib/input/TextArea';
+import { useSelector } from 'react-redux';
 
 function Images({ photo }) {
   return (
@@ -43,6 +44,7 @@ function Images({ photo }) {
 
 export default function Album() {
   let { id } = useParams();
+  const currentUser = useSelector((state) => state.currentUser);
   const [photos, setPhotos] = useState([]);
   const [albumName, setAlbumName] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -78,19 +80,20 @@ export default function Album() {
         style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}
       >
         <h1 style={{ marginBottom: 0, marginRight: '15px' }}> {albumName}</h1>
-        {
-          // check quyenf
-        }
-        <Button
-          type='primary'
-          style={{ backgroundColor: '#efefef', borderColor: '#efefef' }}
-          shape='circle'
-          icon={
-            <EllipsisOutlined style={{ fontSize: '28px', color: 'black' }} />
-          }
-          size='large'
-          onClick={showModal}
-        />
+        {currentUser.albums.some((album) => album.value === id) ? (
+          <Button
+            type='primary'
+            style={{ backgroundColor: '#efefef', borderColor: '#efefef' }}
+            shape='circle'
+            icon={
+              <EllipsisOutlined style={{ fontSize: '28px', color: 'black' }} />
+            }
+            size='large'
+            onClick={showModal}
+          />
+        ) : (
+          <></>
+        )}
       </div>
       <Row gutter={[16, 24]}>
         {!!photos ? (
