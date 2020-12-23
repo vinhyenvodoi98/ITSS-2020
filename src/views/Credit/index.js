@@ -8,7 +8,7 @@ import Purchase from 'components/Purchase';
 const { Step } = Steps;
 
 export default function Credit() {
-  const [current, setCurrent] = useState(1);
+  const [current, setCurrent] = useState(0);
   const currentUser = useSelector((state) => state.currentUser);
 
   const steps = [

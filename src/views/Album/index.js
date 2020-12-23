@@ -93,8 +93,10 @@ export default function Album() {
       setAlbumName(albums.name);
       await albums.photo.forEach(async (b) => {
         var photo = await selectDB('pictures', b);
-        photo.id = b;
-        setPhotos((photos) => [...photos, photo]);
+        if (!!photo) {
+          photo.id = b;
+          setPhotos((photos) => [...photos, photo]);
+        }
       });
     };
     fetchPhoto();

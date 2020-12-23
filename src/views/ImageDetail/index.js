@@ -1,11 +1,18 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, Redirect } from 'react-router-dom';
 import { Avatar, Tag, message, Button } from 'antd';
-import { storage, selectDB, updateDB, searchDB } from 'firebaseConfig';
+import {
+  storage,
+  selectDB,
+  updateDB,
+  searchDB,
+  deleteDB
+} from 'firebaseConfig';
 import CommentA from 'components/Comment';
 import { useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
-import { DownloadOutlined } from '@ant-design/icons';
+import { DownloadOutlined, DeleteOutlined } from '@ant-design/icons';
 import Images from 'components/Images';
+import Modal from 'antd/lib/modal/Modal';
 
 export default function ImageDetail() {
   let { title, id } = useParams();
@@ -13,6 +20,9 @@ export default function ImageDetail() {
   const [author, setAuthor] = useState();
   const [photo, setPhoto] = useState();
   const [photos, setPhotos] = useState();
+  const [onHover, setOnHover] = useState(0);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [deleteComp, setDeleteComp] = useState(false);
 
   useEffect(() => {
     const updatePhoto = async () => {
@@ -82,8 +92,23 @@ export default function ImageDetail() {
     }
   };
 
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = async () => {
+    await deleteDB('pictures', id);
+    setIsModalVisible(false);
+    setDeleteComp(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
   return (
     <div className='detail_images'>
+      {deleteComp ? <Redirect to='/' /> : <></>}
       <div
         className='box'
         style={{
@@ -104,30 +129,70 @@ export default function ImageDetail() {
                 alignItems: 'center'
               }}
             >
-              <img
-                onContextMenu={(e) => e.preventDefault()}
-                alt={photo.title}
-                style={{ height: 'auto', width: '100%', display: 'flex' }}
-                {...photo}
-              />
-            </div>
-            <div style={{ margin: '2vh', width: '30%' }}>
               <div
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  justifyContent: 'flex-end'
+                style={{ position: 'relative', height: '100%' }}
+                onMouseEnter={() => setOnHover(1)}
+                onMouseLeave={() => {
+                  setOnHover(0);
                 }}
               >
-                <Button
-                  type='primary'
-                  danger
-                  shape='circle'
-                  onClick={() => download()}
-                >
-                  <DownloadOutlined />
-                </Button>
+                <img
+                  onContextMenu={(e) => e.preventDefault()}
+                  alt={photo.title}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    objectFit: 'cover'
+                  }}
+                  {...photo}
+                />
+                {onHover === 1 ? (
+                  <div
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      justifyContent: 'flex-end',
+                      alignItems: 'flex-end',
+                      position: 'absolute',
+                      bottom: '0',
+                      padding: '1vw'
+                    }}
+                  >
+                    {photo.author.uid === currentUser.uid ? (
+                      <Button
+                        type='primary'
+                        danger
+                        shape='circle'
+                        size='large'
+                        onClick={showModal}
+                        style={{
+                          marginRight: '15px',
+                          backgroundColor: '#efefef',
+                          borderColor: '#efefef'
+                        }}
+                      >
+                        <DeleteOutlined style={{ color: 'black' }} />
+                      </Button>
+                    ) : (
+                      <></>
+                    )}
+                    <Button
+                      type='primary'
+                      danger
+                      shape='circle'
+                      size='large'
+                      onClick={() => download()}
+                    >
+                      <DownloadOutlined />
+                    </Button>
+                  </div>
+                ) : (
+                  <></>
+                )}
               </div>
+            </div>
+            <div style={{ margin: '2vh', width: '30%' }}>
               <div>
                 <p>
                   <strong>Tag</strong>
@@ -179,6 +244,37 @@ export default function ImageDetail() {
         <h1>Similar Picture</h1>
         {!!photos ? <Images photos={photos} /> : ''}
       </div>
+      <Modal
+        title='Are you sure you want to delete this picture ?'
+        visible={isModalVisible}
+        onCancel={handleCancel}
+        footer={[]}
+      >
+        <div style={{ width: '100%' }}>
+          <Button
+            type='primary'
+            style={{
+              width: '100%',
+              backgroundColor: '#efefef',
+              borderColor: '#efefef',
+              borderRadius: '15px',
+              marginBottom: '15px',
+              color: 'black'
+            }}
+            onClick={handleCancel}
+          >
+            <strong>Cancel</strong>
+          </Button>
+          <Button
+            type='primary'
+            danger
+            style={{ width: '100%', borderRadius: '15px' }}
+            onClick={handleOk}
+          >
+            <strong>Delete</strong>
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 }
