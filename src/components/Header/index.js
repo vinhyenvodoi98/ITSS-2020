@@ -72,17 +72,17 @@ function Header() {
         <ul className='navbar-nav mr-auto'>
           <li className='nav-item active'>
             <Link className='nav-link' to='/'>
-              Khám phá
+              Discover
             </Link>
           </li>
-          <li className='nav-item active'>
+          {/* <li className='nav-item active'>
             <Link className='nav-link' to='/'>
               Tạo
             </Link>
-          </li>
+          </li> */}
           <li className='nav-item active'>
             <Link className='nav-link' to='/credit'>
-              Dùng pro
+              Go Pro
             </Link>
           </li>
         </ul>
@@ -137,12 +137,12 @@ function Header() {
           <ul className='navbar-nav'>
             <li>
               <Link className='nav-link' to='/signup'>
-                Đăng nhập
+                SignIn
               </Link>
             </li>
             <li>
               <Link className='nav-link' to='/'>
-                Đăng ký
+                SignUp
               </Link>
             </li>
           </ul>

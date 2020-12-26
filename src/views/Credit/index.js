@@ -1,15 +1,30 @@
 import { useSelector } from 'react-redux';
 import { Steps, Button } from 'antd';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CreditCard from 'components/CreditCard';
 import { updateDB } from 'firebaseConfig';
 import Purchase from 'components/Purchase';
+import { Redirect } from 'react-router-dom';
 
 const { Step } = Steps;
 
 export default function Credit() {
   const [current, setCurrent] = useState(0);
   const currentUser = useSelector((state) => state.currentUser);
+  const [creditData, setCreditData] = useState();
+  const [redirect, setRedirect] = useState();
+
+  useEffect(() => {
+    const fetchCredit = () => {
+      if (!!currentUser) {
+        if (!!currentUser.credit) {
+          setCreditData(currentUser.credit);
+          setCurrent(1);
+        }
+      } else setRedirect('signup');
+    };
+    fetchCredit();
+  }, [currentUser]);
 
   const steps = [
     {
@@ -37,6 +52,7 @@ export default function Credit() {
 
   return (
     <div className='detail_images'>
+      {!!redirect ? <Redirect to='/signup' /> : <></>}
       <div
         className='box'
         style={{
@@ -57,7 +73,7 @@ export default function Credit() {
         <div className='steps-content'>
           {current === 0 ? (
             <div style={{}}>
-              <CreditCard onCardSubmit={onCardSubmit} />
+              <CreditCard onCardSubmit={onCardSubmit} creditData={creditData} />
             </div>
           ) : (
             <div>
