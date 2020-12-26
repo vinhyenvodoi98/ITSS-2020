@@ -54,7 +54,7 @@ export default function Credit() {
     <div className='detail_images'>
       {!!redirect ? <Redirect to='/signup' /> : <></>}
       <div
-        className='box'
+        className='box creditx'
         style={{
           width: '80vw',
           height: '80vh',
@@ -88,6 +88,17 @@ export default function Credit() {
           >
             Previous
           </Button>
+        )}
+        {!!currentUser && !!currentUser.credit && current === 0 ? (
+          <Button
+            style={{ borderRadius: '10px', margin: '2vw 4vw' }}
+            type='primary'
+            onClick={() => next()}
+          >
+            Next
+          </Button>
+        ) : (
+          <></>
         )}
         {/* <div className='steps-action'>
           {current < steps.length - 1 && (

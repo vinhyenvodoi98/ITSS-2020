@@ -1,5 +1,5 @@
 import Card from 'react-credit-cards';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import 'react-credit-cards/es/styles-compiled.css';
 import './index.css';
 
@@ -9,13 +9,23 @@ import {
   formatExpirationDate
 } from './utils';
 
-export default function CreditCard({ onCardSubmit }) {
+export default function CreditCard({ onCardSubmit, creditData }) {
   const [cvc, setCvc] = useState('');
   const [expiry, setExpiry] = useState('');
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
   const [issuer, setIssuer] = useState('');
   const [focused, setFocused] = useState('');
+
+  useEffect(() => {
+    if (!!creditData) {
+      setCvc(creditData.cvc);
+      setIssuer(creditData.issuer);
+      setName(creditData.name);
+      setNumber(creditData.number);
+      setExpiry(creditData.expiry);
+    }
+  }, [creditData]);
 
   const handleCallback = ({ issuer }, isValid) => {
     if (isValid) {
@@ -73,6 +83,7 @@ export default function CreditCard({ onCardSubmit }) {
             placeholder='Card Number'
             pattern='[\d| ]{16,22}'
             required
+            value={number}
             onChange={handleInputChange}
             onFocus={handleInputFocus}
           />
@@ -85,6 +96,7 @@ export default function CreditCard({ onCardSubmit }) {
             className='form-control'
             placeholder='Name'
             required
+            value={name}
             onChange={handleInputChange}
             onFocus={handleInputFocus}
           />
@@ -98,6 +110,7 @@ export default function CreditCard({ onCardSubmit }) {
               placeholder='Valid Thru'
               pattern='\d\d/\d\d'
               required
+              value={expiry}
               onChange={handleInputChange}
               onFocus={handleInputFocus}
             />
@@ -106,6 +119,7 @@ export default function CreditCard({ onCardSubmit }) {
             <input
               type='tel'
               name='cvc'
+              value={cvc}
               className='form-control'
               placeholder='CVC'
               pattern='\d{3,4}'

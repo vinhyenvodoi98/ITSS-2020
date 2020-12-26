@@ -1,6 +1,6 @@
 import { Avatar, Input, Button, Upload } from 'antd';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
 import {
   selectDB,
@@ -11,6 +11,7 @@ import {
 import ViewTab from 'components/ViewTab';
 import Modal from 'antd/lib/modal/Modal';
 import { EditOutlined, LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { setCurrentUsers } from 'store/actions';
 
 function getBase64(img, callback) {
   const reader = new FileReader();
@@ -20,6 +21,7 @@ function getBase64(img, callback) {
 
 export default function Profile() {
   let { id } = useParams();
+  const dispatch = useDispatch();
   const [user, setUser] = useState(null);
   const currentUser = useSelector((state) => state.currentUser);
   const [photos, setPhotos] = useState([]);
@@ -29,6 +31,7 @@ export default function Profile() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [name, setName] = useState();
   const [gmail, setGmail] = useState();
+  const [update, setUpdate] = useState(1);
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -52,12 +55,15 @@ export default function Profile() {
             .child(imageFile.name)
             .getDownloadURL()
             .then(async (url) => {
-              console.log(url);
-              await updateDB('users', user.uid, {
+              let a = await updateDB('users', user.uid, {
                 photoURL: url,
                 displayName: name,
                 email: gmail
               });
+
+              setTimeout(async () => {
+                setUpdate(update + 1);
+              }, 1000);
             });
         }
       );
@@ -65,6 +71,10 @@ export default function Profile() {
       //////////////////
     } else
       await updateDB('users', user.uid, { displayName: name, email: gmail });
+
+    setTimeout(async () => {
+      setUpdate(update + 1);
+    }, 1000);
     setIsModalVisible(false);
   };
 
@@ -75,12 +85,15 @@ export default function Profile() {
   useEffect(() => {
     const fetchProfile = async () => {
       var user = await selectDB('users', id);
+      await dispatch(setCurrentUsers(user));
+
+      console.log(user);
       setUser(user);
       setName(user.displayName);
       setGmail(user.email);
     };
     fetchProfile();
-  }, [id]);
+  }, [id, update, dispatch]);
 
   useEffect(() => {
     const getPhoto = async () => {

@@ -80,6 +80,7 @@ export default function Album() {
     let index = currentUser.albums.findIndex((i) => i.value === id);
     currentUser.albums[index].label = newAlbumName;
     await updateDB('users', currentUser.uid, currentUser);
+    setAlbumName(newAlbumName);
     setIsModalVisible(false);
   };
 

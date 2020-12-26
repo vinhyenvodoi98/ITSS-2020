@@ -20,6 +20,7 @@ const { Option } = Select;
 function Header() {
   const [currentUser, setCurrentUser] = useState('');
   const search = useSelector((state) => state.search);
+  const currentUserT = useSelector((state) => state.currentUser);
   const onSearch = async (value) => {
     console.log(value);
     if (value.length > 0) dispatch(searchPictures(value));
@@ -109,13 +110,15 @@ function Header() {
               <Link to={`/user/${currentUser.uid}`}>
                 <Avatar
                   size={40}
-                  src={currentUser ? currentUser.photoURL : ''}
+                  src={currentUserT ? currentUserT.photoURL : ''}
                   style={{ marginLeft: '20px' }}
                 ></Avatar>
               </Link>
             </li>
             <Link to={`/user/${currentUser.uid}`}>
-              <li className='nav-link'>{currentUser.displayName}</li>
+              <li className='nav-link'>
+                {currentUserT ? currentUserT.displayName : ''}
+              </li>
             </Link>
 
             <li>
