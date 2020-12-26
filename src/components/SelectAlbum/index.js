@@ -26,6 +26,7 @@ export default function SelectAlbum({ setcurrentAlbum }) {
     const updateA = async () => {
       let result = await selectDB('users', currentUser.uid);
       setAlbums(result.albums);
+      setAlbum(result.albums[0].label);
     };
     updateA();
   });
@@ -64,6 +65,7 @@ export default function SelectAlbum({ setcurrentAlbum }) {
 
   return (
     <div>
+      {console.log(albums)}
       <Select
         showSearch
         value={album}

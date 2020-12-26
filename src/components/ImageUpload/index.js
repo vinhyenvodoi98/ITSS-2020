@@ -290,13 +290,23 @@ function ImageUpload({ close, isUpload }) {
                 </div>
               </Col>
               <Col className='gutter-row' span={10} style={{ height: '100%' }}>
+                <h5>Select Album</h5>
                 <div style={{ display: 'flex' }}>
-                  <SelectAlbum setcurrentAlbum={setcurrentAlbum} />
+                  <div
+                    style={{
+                      marginRight: '10px',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <SelectAlbum setcurrentAlbum={setcurrentAlbum} />
+                  </div>
                   <button
                     className='btn btn-light'
                     style={{
                       background: 'red',
-                      height: '32px'
+                      borderRadius: '20px'
                     }}
                     onClick={() => handleUpload(close)}
                   >

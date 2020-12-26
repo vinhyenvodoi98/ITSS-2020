@@ -55,7 +55,7 @@ export default function Profile() {
             .child(imageFile.name)
             .getDownloadURL()
             .then(async (url) => {
-              let a = await updateDB('users', user.uid, {
+              await updateDB('users', user.uid, {
                 photoURL: url,
                 displayName: name,
                 email: gmail
