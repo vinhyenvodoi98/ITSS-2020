@@ -48,7 +48,7 @@ export var updatePhotoToAlbums = async (user) => {
     var albums = await selectDB('albums', a.value);
     albums.photo.forEach(async (b) => {
       var photo = await selectDB('pictures', b);
-      photos.push(photo);
+      if (!!photo) photos.push(photo);
     });
     a.photos = photos;
   });

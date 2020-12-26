@@ -119,87 +119,83 @@ export default function Profile() {
         <div className='detail_images' style={{ marginTop: '5vh' }}>
           <Avatar size={180} src={user.photoURL}></Avatar>
 
-          {!!currentUser ? (
-            id === currentUser.uid ? (
-              <>
-                <div
+          {!!currentUser && id === currentUser.uid ? (
+            <>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  marginBottom: '15px'
+                }}
+              >
+                <h1 style={{ marginBottom: 0, marginRight: '15px' }}>
+                  {user.displayName}
+                </h1>
+                <Button
+                  type='primary'
                   style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    marginBottom: '15px'
+                    backgroundColor: '#efefef',
+                    borderColor: '#efefef'
                   }}
+                  shape='circle'
+                  icon={
+                    <EditOutlined
+                      style={{ fontSize: '28px', color: 'black' }}
+                    />
+                  }
+                  size='large'
+                  onClick={showModal}
+                />
+              </div>
+              <p>{user.email}</p>
+              <p>
+                You have : <strong>{user.downloadTime}</strong> download time
+              </p>
+              <Modal
+                title='Update Profile'
+                visible={isModalVisible}
+                onOk={handleOk}
+                onCancel={handleCancel}
+              >
+                <h5>Upload Avatar</h5>
+                <Upload
+                  name='avatar'
+                  listType='picture-card'
+                  className='avatar-uploader'
+                  showUploadList={false}
+                  action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
+                  // beforeUpload={beforeUpload}
+                  onChange={handleChange}
                 >
-                  <h1 style={{ marginBottom: 0, marginRight: '15px' }}>
-                    {user.displayName}
-                  </h1>
-                  <Button
-                    type='primary'
-                    style={{
-                      backgroundColor: '#efefef',
-                      borderColor: '#efefef'
-                    }}
-                    shape='circle'
-                    icon={
-                      <EditOutlined
-                        style={{ fontSize: '28px', color: 'black' }}
-                      />
-                    }
-                    size='large'
-                    onClick={showModal}
-                  />
-                </div>
-                <p>{user.email}</p>
-                <p>
-                  You have : <strong>{user.downloadTime}</strong> download time
-                </p>
-                <Modal
-                  title='Update Profile'
-                  visible={isModalVisible}
-                  onOk={handleOk}
-                  onCancel={handleCancel}
-                >
-                  <h5>Upload Avatar</h5>
-                  <Upload
-                    name='avatar'
-                    listType='picture-card'
-                    className='avatar-uploader'
-                    showUploadList={false}
-                    action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
-                    // beforeUpload={beforeUpload}
-                    onChange={handleChange}
-                  >
-                    {imageUrl ? (
-                      <img
-                        src={imageUrl}
-                        alt='avatar'
-                        style={{ width: '100%' }}
-                      />
-                    ) : (
-                      uploadButton
-                    )}
-                  </Upload>
-                  <h5 style={{ marginBottom: 0 }}>Name</h5>
-                  <Input
-                    style={{ marginBottom: '15px' }}
-                    placeholder={user.displayName}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                  <h5 style={{ marginBottom: 0 }}>Gmail</h5>
-                  <Input
-                    style={{ marginBottom: '15px' }}
-                    placeholder={user.email}
-                    onChange={(e) => setGmail(e.target.value)}
-                  />
-                </Modal>
-              </>
-            ) : (
-              <>
-                <h1>{user.displayName}</h1>
-                <p>{user.email}</p>
-              </>
-            )
+                  {imageUrl ? (
+                    <img
+                      src={imageUrl}
+                      alt='avatar'
+                      style={{ width: '100%' }}
+                    />
+                  ) : (
+                    uploadButton
+                  )}
+                </Upload>
+                <h5 style={{ marginBottom: 0 }}>Name</h5>
+                <Input
+                  style={{ marginBottom: '15px' }}
+                  placeholder={user.displayName}
+                  onChange={(e) => setName(e.target.value)}
+                />
+                <h5 style={{ marginBottom: 0 }}>Gmail</h5>
+                <Input
+                  style={{ marginBottom: '15px' }}
+                  placeholder={user.email}
+                  onChange={(e) => setGmail(e.target.value)}
+                />
+              </Modal>
+            </>
           ) : (
-            <></>
+            <>
+              <h1>{user.displayName}</h1>
+              <p>{user.email}</p>
+            </>
           )}
           <ViewTab photos={photos} user={user} />
         </div>

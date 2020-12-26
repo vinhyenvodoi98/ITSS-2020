@@ -147,7 +147,7 @@ export default function ImageDetail() {
                   }}
                   {...photo}
                 />
-                {onHover === 1 ? (
+                {!!currentUser && onHover === 1 ? (
                   <div
                     style={{
                       width: '100%',
@@ -169,10 +169,14 @@ export default function ImageDetail() {
                         style={{
                           marginRight: '15px',
                           backgroundColor: '#efefef',
-                          borderColor: '#efefef'
+                          borderColor: '#efefef',
+                          width: '100px',
+                          height: '100px'
                         }}
                       >
-                        <DeleteOutlined style={{ color: 'black' }} />
+                        <DeleteOutlined
+                          style={{ color: 'black', fontSize: '40px' }}
+                        />
                       </Button>
                     ) : (
                       <></>
@@ -183,8 +187,9 @@ export default function ImageDetail() {
                       shape='circle'
                       size='large'
                       onClick={() => download()}
+                      style={{ width: '100px', height: '100px' }}
                     >
-                      <DownloadOutlined />
+                      <DownloadOutlined style={{ fontSize: '40px' }} />
                     </Button>
                   </div>
                 ) : (
