@@ -65,7 +65,6 @@ export default function SelectAlbum({ setcurrentAlbum }) {
 
   return (
     <div>
-      {console.log(albums)}
       <Select
         showSearch
         value={album}

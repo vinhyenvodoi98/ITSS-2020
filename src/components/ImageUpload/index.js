@@ -201,6 +201,8 @@ function ImageUpload({ close, isUpload }) {
                     });
                 } catch (e) {
                   console.log(e);
+                  setIsLoading(true);
+                  message.error('Upload failed, please try again !');
                 }
               });
           }

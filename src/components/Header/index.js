@@ -22,7 +22,6 @@ function Header() {
   const search = useSelector((state) => state.search);
   const currentUserT = useSelector((state) => state.currentUser);
   const onSearch = async (value) => {
-    console.log(value);
     if (value.length > 0) dispatch(searchPictures(value));
     else dispatch(getPictures());
   };
