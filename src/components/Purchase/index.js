@@ -1,24 +1,77 @@
+import Modal from 'antd/lib/modal/Modal';
+import { Button, message } from 'antd';
+import { useState } from 'react';
+
 function Package({ name, des, money, time }) {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = async () => {
+    message.success('Buy successfully !!!');
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
   return (
-    <div
-      className='detail_images box'
-      style={{
-        padding: '30px',
-        width: '250px',
-        height: '320px',
-        borderRadius: '25px',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignContent: 'space-between'
-      }}
-    >
-      <h2>{name}</h2>
-      <p style={{ height: '60%' }}>{des}</p>
-      <p>
-        <strong>{`${money} USD/${time}`}</strong>
-      </p>
-    </div>
+    <>
+      <div
+        className='detail_images box'
+        style={{
+          padding: '30px',
+          width: '250px',
+          height: '320px',
+          borderRadius: '25px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignContent: 'space-between',
+          cursor: 'pointer'
+        }}
+        onClick={showModal}
+      >
+        <h2>{name}</h2>
+        <p style={{ height: '60%' }}>{des}</p>
+        <p>
+          <strong>{`${money} USD/${time}`}</strong>
+        </p>
+      </div>
+      <Modal
+        title='Are you sure you want to buy this Purchase ?'
+        visible={isModalVisible}
+        onCancel={handleCancel}
+        footer={[]}
+      >
+        <div style={{ width: '100%' }}>
+          <Button
+            type='primary'
+            style={{
+              width: '100%',
+              backgroundColor: '#efefef',
+              borderColor: '#efefef',
+              borderRadius: '15px',
+              marginBottom: '15px',
+              color: 'black'
+            }}
+            onClick={handleCancel}
+          >
+            <strong>Cancel</strong>
+          </Button>
+          <Button
+            type='primary'
+            style={{ width: '100%', borderRadius: '15px' }}
+            onClick={handleOk}
+          >
+            <strong>Buy</strong>
+          </Button>
+        </div>
+      </Modal>
+    </>
   );
 }
 
