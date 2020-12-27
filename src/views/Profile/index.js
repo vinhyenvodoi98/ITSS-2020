@@ -86,8 +86,6 @@ export default function Profile() {
     const fetchProfile = async () => {
       var user = await selectDB('users', id);
       await dispatch(setCurrentUsers(user));
-
-      console.log(user);
       setUser(user);
       setName(user.displayName);
       setGmail(user.email);
@@ -116,7 +114,8 @@ export default function Profile() {
     }
 
     setImageFile(info.file.originFileObj);
-    console.log(info.file.originFileObj);
+    info.file.status = 'done';
+
     if (info.file.status === 'done') {
       // Get this url from response in real world.
       getBase64(info.file.originFileObj, (imageUrl) => {
@@ -176,7 +175,7 @@ export default function Profile() {
                   listType='picture-card'
                   className='avatar-uploader'
                   showUploadList={false}
-                  action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
+                  // action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
                   // beforeUpload={beforeUpload}
                   onChange={handleChange}
                 >
