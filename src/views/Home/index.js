@@ -17,11 +17,13 @@ function Home() {
     const fetch = async () => {
       if (!!currentUser) {
         setlovePhotos(await searchDB('pictures', currentUser.attention));
+      } else {
+        setlovePhotos(photos);
       }
     };
 
     fetch();
-  }, [dispatch, currentUser]);
+  }, [dispatch, currentUser, photos]);
 
   function callback(key) {
     if (key === '1') {

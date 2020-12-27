@@ -99,7 +99,9 @@ export default function ImageDetail() {
   const handleOk = async () => {
     await deleteDB('pictures', id);
     setIsModalVisible(false);
-    setDeleteComp(true);
+    setTimeout(() => {
+      setDeleteComp(true);
+    }, 1000);
   };
 
   const handleCancel = () => {

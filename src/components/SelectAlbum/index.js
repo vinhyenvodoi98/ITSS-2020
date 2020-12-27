@@ -25,8 +25,11 @@ export default function SelectAlbum({ setcurrentAlbum }) {
   useEffect(() => {
     const updateA = async () => {
       let result = await selectDB('users', currentUser.uid);
-      setAlbums(result.albums);
-      setAlbum(result.albums[0].label);
+      if (!!result.albums) {
+        setAlbums(result.albums);
+        setAlbum(result.albums[0].label);
+        setcurrentAlbum(result.albums[0].value);
+      }
     };
     updateA();
   });

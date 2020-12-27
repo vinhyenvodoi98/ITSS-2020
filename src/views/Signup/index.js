@@ -38,10 +38,15 @@ export default function Signup() {
             email: currentUser.email,
             downloadTime: 10000
           });
-          setIsFirst(true);
+          setTimeout(() => {
+            window.location = '/selectTag';
+          }, 1000);
         } else {
           if (!!isExists.attention) setIsFirst(false);
-          else setIsFirst(true);
+          else
+            setTimeout(() => {
+              window.location = '/selectTag';
+            }, 1000);
         }
       }
     };

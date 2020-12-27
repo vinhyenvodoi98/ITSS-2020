@@ -3,10 +3,12 @@ import { TweenOneGroup } from 'rc-tween-one';
 import { useState, useEffect } from 'react';
 import './index.css';
 import { selectDB, updateDB } from 'firebaseConfig';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import { setCurrentUsers } from 'store/actions';
 
 export default function SelectTag() {
+  const dispatch = useDispatch();
   const [tags, setTags] = useState([]);
   const [allTags, setAllTags] = useState([]);
   const currentUser = useSelector((state) => state.currentUser);
@@ -91,7 +93,13 @@ export default function SelectTag() {
 
   const updateAttention = async () => {
     updateDB('users', currentUser.uid, { attention: tags });
-    setRedirect('/');
+    setTimeout(async () => {
+      let user = await selectDB('users', currentUser.uid);
+      dispatch(setCurrentUsers(user));
+    }, 1000);
+    setTimeout(() => {
+      setRedirect('/');
+    }, 2000);
   };
 
   const tagChild = tags.map(forMap);

@@ -110,108 +110,108 @@ function ImageUpload({ close, isUpload }) {
   );
 
   const handleUpload = (close) => {
-    files.forEach((file) => {
-      setIsLoading(true);
+    if (!!currentAlbum) {
+      files.forEach((file) => {
+        setIsLoading(true);
 
-      if (file.size > 1000000) {
-        var imgWidth;
-        var imgHeight;
-        var imageSize = new Image();
-        let fr = new FileReader();
+        if (file.size > 1000000) {
+          var imgWidth;
+          var imgHeight;
+          var imageSize = new Image();
+          let fr = new FileReader();
 
-        fr.onload = function () {
-          if (fr !== null && typeof fr.result == 'string') {
-            imageSize.src = fr.result;
-          }
-        };
-        fr.readAsDataURL(file);
+          fr.onload = function () {
+            if (fr !== null && typeof fr.result == 'string') {
+              imageSize.src = fr.result;
+            }
+          };
+          fr.readAsDataURL(file);
 
-        imageSize.onload = async function () {
-          imgWidth = imageSize.width;
-          imgHeight = imageSize.height;
-        };
-        const image = file;
-        const uploadTask = storage.ref(`images/${image.path}`).put(image);
-        uploadTask.on(
-          'state_changed',
-          (snapshot) => {},
-          (error) => {
-            // error function ....
-            console.log(error);
-          },
-          () => {
-            storage
-              .ref('images')
-              .child(image.name)
-              .getDownloadURL()
-              .then(async (url) => {
-                console.log({ url });
-                try {
-                  let label = await axios.post(
-                    'https://labelingimages.herokuapp.com/api/classify',
-                    {
-                      url
-                    }
-                  );
+          imageSize.onload = async function () {
+            imgWidth = imageSize.width;
+            imgHeight = imageSize.height;
+          };
+          const image = file;
+          const uploadTask = storage.ref(`images/${image.path}`).put(image);
+          uploadTask.on(
+            'state_changed',
+            (snapshot) => {},
+            (error) => {
+              // error function ....
+              console.log(error);
+            },
+            () => {
+              storage
+                .ref('images')
+                .child(image.name)
+                .getDownloadURL()
+                .then(async (url) => {
+                  console.log({ url });
+                  try {
+                    let label = await axios.post(
+                      'https://labelingimages.herokuapp.com/api/classify',
+                      {
+                        url
+                      }
+                    );
 
-                  console.log('label', label.data);
+                    let labelDb = await selectDB('label', 'label');
 
-                  let labelDb = await selectDB('label', 'label');
-
-                  await label.data.forEach((lb) => {
-                    if (labelDb.label.indexOf(lb) === -1) {
-                      labelDb.label.push(lb);
-                    }
-                  });
-
-                  console.log('labelDb', labelDb);
-
-                  await insertDB('label', 'label', labelDb);
-
-                  db.collection('pictures')
-                    .add({
-                      src: url,
-                      width: imgWidth,
-                      height: imgHeight,
-                      title: image.name,
-                      author: {
-                        img: currentUser.photoURL,
-                        name: currentUser.displayName,
-                        uid: currentUser.uid
-                      },
-                      label: label.data,
-                      size: Math.floor(file.size / 100000) / 10
-                    })
-                    .then(async function (docRef) {
-                      console.log('Document written with ID: ', docRef.id);
-                      message.success('Upload successfully');
-                      await updatePhotoAlbums(
-                        'albums',
-                        currentAlbum,
-                        docRef.id
-                      );
-                      setIsLoading(false);
-                      setFiles([]);
-                      dispatch(getPictures());
-                      close();
-                    })
-                    .catch(function (error) {
-                      message.error('Upload failed');
-                      console.error('Error adding document: ', error);
+                    await label.data.forEach((lb) => {
+                      if (labelDb.label.indexOf(lb) === -1) {
+                        labelDb.label.push(lb);
+                      }
                     });
-                } catch (e) {
-                  console.log(e);
-                  setIsLoading(true);
-                  message.error('Upload failed, please try again !');
-                }
-              });
-          }
-        );
-      } else {
-        alert(`${file.name} is must be over 1MB`);
-        setIsLoading(false);
-      }
-    });
+
+                    console.log('labelDb', labelDb);
+
+                    await insertDB('label', 'label', labelDb);
+
+                    db.collection('pictures')
+                      .add({
+                        src: url,
+                        width: imgWidth,
+                        height: imgHeight,
+                        title: image.name,
+                        author: {
+                          img: currentUser.photoURL,
+                          name: currentUser.displayName,
+                          uid: currentUser.uid
+                        },
+                        label: label.data,
+                        size: Math.floor(file.size / 100000) / 10
+                      })
+                      .then(async function (docRef) {
+                        console.log('Document written with ID: ', docRef.id);
+                        message.success('Upload successfully');
+                        await updatePhotoAlbums(
+                          'albums',
+                          currentAlbum,
+                          docRef.id
+                        );
+                        setIsLoading(false);
+                        setFiles([]);
+                        dispatch(getPictures());
+                        close();
+                      })
+                      .catch(function (error) {
+                        message.error('Upload failed');
+                        console.error('Error adding document: ', error);
+                      });
+                  } catch (e) {
+                    console.log(e);
+                    setIsLoading(true);
+                    message.error('Upload failed, please try again !');
+                  }
+                });
+            }
+          );
+        } else {
+          alert(`${file.name} is must be over 1MB`);
+          setIsLoading(false);
+        }
+      });
+    } else message.error('Please select or create new album');
   };
 
   const handleSearch = (close) => {
@@ -251,7 +251,6 @@ function ImageUpload({ close, isUpload }) {
                     url
                   }
                 );
-                console.log('label', label);
 
                 dispatch(searchPictures(label.data));
                 dispatch(setCurrentSearch(url));
