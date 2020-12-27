@@ -7,6 +7,7 @@ import Search from 'views/Search';
 import Profile from 'views/Profile';
 import Album from 'views/Album';
 import Credit from 'views/Credit';
+import SelectTag from 'views/SelectTag';
 
 function Router() {
   return (
@@ -21,6 +22,7 @@ function Router() {
       <Route exact path='/album/:id' component={Album} />
       <Route exact path='/user/:id' component={Profile} />
       <Route exact path='/credit' component={Credit} />
+      <Route exact path='/selectTag' component={SelectTag} />
       {/* {content.LoginStatus.isLogin ? (
         <Switch>
           <Route exact path='/' component={Home} />

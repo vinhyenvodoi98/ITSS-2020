@@ -43,17 +43,19 @@ export var selectPictureFromAuthor = async (collection, uid) => {
 
 // -------------select firestore----------
 export var updatePhotoToAlbums = async (user) => {
-  await user.albums.forEach(async (a) => {
-    var photos = [];
-    var albums = await selectDB('albums', a.value);
-    albums.photo.forEach(async (b) => {
-      var photo = await selectDB('pictures', b);
-      if (!!photo) photos.push(photo);
+  if (!!user.albums) {
+    await user.albums.forEach(async (a) => {
+      var photos = [];
+      var albums = await selectDB('albums', a.value);
+      albums.photo.forEach(async (b) => {
+        var photo = await selectDB('pictures', b);
+        if (!!photo) photos.push(photo);
+      });
+      a.photos = photos;
     });
-    a.photos = photos;
-  });
 
-  return user;
+    return user;
+  }
 };
 
 // -------------search firestore----------

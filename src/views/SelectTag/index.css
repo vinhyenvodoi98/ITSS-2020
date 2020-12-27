@@ -1,0 +1,29 @@
+.select_tag_area {
+  width: 600px;
+  min-height: 48px;
+  padding: 8px;
+  margin-bottom: 16px;
+  border-radius: 10px;
+  border: 1px solid #d9d9d9;
+  margin: 10px;
+}
+
+.ant-tag {
+  height: 30px;
+  border-radius: 5px;
+  /* display: flex;
+  align-items: center; */
+  font-size: 15px;
+  padding-top: 4px;
+  font-weight: 600;
+}
+
+.select_tags > span > .ant-tag {
+  height: 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}

@@ -24,6 +24,7 @@ import './index.css';
 
 export default function Signup() {
   const [currentUser, setCurrentUser] = useState(null);
+  const [isFirst, setIsFirst] = useState(null);
 
   useEffect(() => {
     const addUser = async () => {
@@ -37,6 +38,10 @@ export default function Signup() {
             email: currentUser.email,
             downloadTime: 10000
           });
+          setIsFirst(true);
+        } else {
+          if (!!isExists.attention) setIsFirst(false);
+          else setIsFirst(true);
         }
       }
     };
@@ -59,8 +64,12 @@ export default function Signup() {
 
   return (
     <div className='signin__btn'>
-      {currentUser ? (
-        <Redirect to='/' />
+      {currentUser && isFirst !== null ? (
+        isFirst ? (
+          <Redirect to='/selectTag' />
+        ) : (
+          <Redirect to='/' />
+        )
       ) : (
         <div
           className='box'

@@ -49,7 +49,6 @@ function Header() {
     signOut();
     setCurrentUser('');
     dispatch(setCurrentUsers(null));
-    window.location.href = '/';
   };
 
   return (

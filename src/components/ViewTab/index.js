@@ -18,7 +18,7 @@ export default function ViewTab({ photos, user }) {
       const getAlbums = async () => {
         if (user) {
           let userAlbum = await updatePhotoToAlbums(user);
-          setAlbums(userAlbum.albums);
+          if (!!userAlbum) setAlbums(userAlbum.albums);
         }
       };
       getAlbums();
@@ -28,7 +28,7 @@ export default function ViewTab({ photos, user }) {
   const callback = async (key) => {
     if (key === '2') {
       let userAlbum = await updatePhotoToAlbums(user);
-      setAlbums(userAlbum.albums);
+      if (!!userAlbum) setAlbums(userAlbum.albums);
       setKey(2);
     }
   };
